@@ -1,0 +1,8 @@
+{
+  "imports": {
+    "std/": "https://deno.land/std@0.224.0/",
+    "supabase": "https://esm.sh/@supabase/supabase-js@2.47.10",
+    "iyzipay": "npm:iyzipay@2.0.61",
+    "zod": "https://esm.sh/zod@3.24.1"
+  }
+}

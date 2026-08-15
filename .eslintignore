@@ -1,0 +1,12 @@
+node_modules/
+.next/
+.expo/
+.turbo/
+dist/
+build/
+out/
+coverage/
+apps/mobile/ios/
+apps/mobile/android/
+*.config.js
+*.config.cjs

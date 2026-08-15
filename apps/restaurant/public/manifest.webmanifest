@@ -1,0 +1,13 @@
+{
+  "name": "Karaman Restoran",
+  "short_name": "Karaman R",
+  "description": "Restoran yönetim paneli",
+  "start_url": "/orders",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0F172A",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
