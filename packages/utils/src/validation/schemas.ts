@@ -17,7 +17,7 @@ export const optionalTurkishPhoneSchema = z
   .string()
   .optional()
   .refine(
-    val => !val || isValidTurkishPhone(val),
+    (val) => !val || isValidTurkishPhone(val),
     'Geçerli bir Türkiye telefon numarası giriniz.',
   );
 
@@ -36,13 +36,11 @@ export const nameSchema = z
   .min(2, 'Ad soyad en az 2 karakter olmalı.')
   .max(80, 'Ad soyad en fazla 80 karakter olabilir.');
 
-export const kvkkSchema = z
-  .boolean()
-  .refine(v => v === true, 'KVKK metnini onaylamalısın.');
+export const kvkkSchema = z.boolean().refine((v) => v === true, 'KVKK metnini onaylamalısın.');
 
 export const termsSchema = z
   .boolean()
-  .refine(v => v === true, 'Kullanım koşullarını onaylamalısın.');
+  .refine((v) => v === true, 'Kullanım koşullarını onaylamalısın.');
 
 export const loginSchema = z.object({
   phone: turkishPhoneSchema,

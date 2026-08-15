@@ -18,9 +18,7 @@ export async function middleware(request: NextRequest) {
     cookies: {
       getAll: () => request.cookies.getAll(),
       setAll: (cookies: CookieInput[]) => {
-        cookies.forEach(({ name, value, options }) =>
-          response.cookies.set(name, value, options),
-        );
+        cookies.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
       },
     },
   });
@@ -31,7 +29,7 @@ export async function middleware(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
   const isPublic =
-    PUBLIC_PATHS.some(p => pathname.startsWith(p)) ||
+    PUBLIC_PATHS.some((p) => pathname.startsWith(p)) ||
     pathname.startsWith('/_next') ||
     pathname.startsWith('/icons');
 

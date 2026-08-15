@@ -10,7 +10,15 @@ export function Table({ className, ...rest }: HTMLAttributes<HTMLTableElement>) 
 }
 
 export function THead({ className, ...rest }: HTMLAttributes<HTMLTableSectionElement>) {
-  return <thead className={cn('border-b border-gray-200 bg-gray-50 text-xs uppercase text-gray-500', className)} {...rest} />;
+  return (
+    <thead
+      className={cn(
+        'border-b border-gray-200 bg-gray-50 text-xs uppercase text-gray-500',
+        className,
+      )}
+      {...rest}
+    />
+  );
 }
 
 export function TBody({ className, ...rest }: HTMLAttributes<HTMLTableSectionElement>) {
@@ -18,7 +26,12 @@ export function TBody({ className, ...rest }: HTMLAttributes<HTMLTableSectionEle
 }
 
 export function TR({ className, ...rest }: HTMLAttributes<HTMLTableRowElement>) {
-  return <tr className={cn('border-b border-gray-100 transition-colors hover:bg-gray-50', className)} {...rest} />;
+  return (
+    <tr
+      className={cn('border-b border-gray-100 transition-colors hover:bg-gray-50', className)}
+      {...rest}
+    />
+  );
 }
 
 export function TH({ className, ...rest }: ThHTMLAttributes<HTMLTableCellElement>) {

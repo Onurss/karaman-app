@@ -4,10 +4,10 @@ export function exportToCSV<T extends Record<string, unknown>>(
   columns: { key: keyof T; header: string }[],
 ) {
   const csv = [
-    columns.map(c => `"${c.header}"`).join(','),
-    ...rows.map(row =>
+    columns.map((c) => `"${c.header}"`).join(','),
+    ...rows.map((row) =>
       columns
-        .map(c => {
+        .map((c) => {
           const value = row[c.key];
           if (value == null) return '';
           const str = typeof value === 'string' ? value : String(value);

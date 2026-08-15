@@ -52,8 +52,7 @@ export const LEGAL_URLS = {
 } as const;
 
 export const APP_STORE_URL = 'https://apps.apple.com/tr/app/karaman-com/idTODO';
-export const PLAY_STORE_URL =
-  'https://play.google.com/store/apps/details?id=com.karaman.mobile';
+export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.karaman.mobile';
 
 export const VAT_RATES = {
   standard: 0.2,

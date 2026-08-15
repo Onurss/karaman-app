@@ -1,4 +1,3 @@
-
 const IYZICO_BASE = Deno.env.get('IYZICO_BASE_URL') ?? 'https://api.iyzipay.com';
 const IYZICO_KEY = Deno.env.get('IYZICO_API_KEY') ?? '';
 const IYZICO_SECRET = Deno.env.get('IYZICO_SECRET_KEY') ?? '';
@@ -22,7 +21,7 @@ const PUBLIC_URL = Deno.env.get('PUBLIC_URL') ?? '';
 async function sha1Hex(input: string): Promise<string> {
   const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(input));
   return Array.from(new Uint8Array(buf))
-    .map(b => b.toString(16).padStart(2, '0'))
+    .map((b) => b.toString(16).padStart(2, '0'))
     .join('')
     .toUpperCase();
 }
@@ -31,7 +30,7 @@ async function sha1Hex(input: string): Promise<string> {
 async function sha512Hex(input: string): Promise<string> {
   const buf = await crypto.subtle.digest('SHA-512', new TextEncoder().encode(input));
   return Array.from(new Uint8Array(buf))
-    .map(b => b.toString(16).padStart(2, '0'))
+    .map((b) => b.toString(16).padStart(2, '0'))
     .join('')
     .toUpperCase();
 }
@@ -50,11 +49,7 @@ async function hmacSha256Base64(key: string, payload: string): Promise<string> {
     false,
     ['sign'],
   );
-  const signature = await crypto.subtle.sign(
-    'HMAC',
-    cryptoKey,
-    new TextEncoder().encode(payload),
-  );
+  const signature = await crypto.subtle.sign('HMAC', cryptoKey, new TextEncoder().encode(payload));
   return btoa(String.fromCharCode(...new Uint8Array(signature)));
 }
 
@@ -126,7 +121,7 @@ export async function initIyzicoThreeDs(params: IyzicoInitParams) {
       country: 'Turkey',
       address: params.buyer.address,
     },
-    basketItems: params.basketItems.map(i => ({
+    basketItems: params.basketItems.map((i) => ({
       id: i.id,
       name: i.name,
       category1: 'Yemek',

@@ -1,4 +1,3 @@
-
 import type {
   BannerPosition,
   FavoriteType,
@@ -363,12 +362,7 @@ export interface Atm {
   created_at: IsoDateTime;
 }
 
-export type ChargingSocketType =
-  | 'type1'
-  | 'type2'
-  | 'ccs'
-  | 'chademo'
-  | 'tesla';
+export type ChargingSocketType = 'type1' | 'type2' | 'ccs' | 'chademo' | 'tesla';
 
 export interface ChargingStation {
   id: Uuid;

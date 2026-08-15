@@ -67,7 +67,9 @@ export default function ReportsPage() {
           .lte('created_at', to + 'T23:59:59'),
         supabase
           .from('order_items')
-          .select('item_name_snapshot, quantity, total_price, orders!inner(restaurant_id, created_at)')
+          .select(
+            'item_name_snapshot, quantity, total_price, orders!inner(restaurant_id, created_at)',
+          )
           .eq('orders.restaurant_id', restaurantId)
           .gte('orders.created_at', from)
           .lte('orders.created_at', to + 'T23:59:59'),
@@ -86,7 +88,7 @@ export default function ReportsPage() {
     const restaurantEarning = total - commission;
 
     const dailyMap: Record<string, { date: string; revenue: number; orders: number }> = {};
-    orders.forEach(o => {
+    orders.forEach((o) => {
       const key = localDateKey(o.created_at);
       if (!dailyMap[key]) dailyMap[key] = { date: key.slice(5), revenue: 0, orders: 0 };
       dailyMap[key].revenue += Number(o.total_amount);
@@ -95,7 +97,7 @@ export default function ReportsPage() {
     const daily = Object.values(dailyMap).sort((a, b) => a.date.localeCompare(b.date));
 
     const paymentMap: Record<string, number> = {};
-    orders.forEach(o => {
+    orders.forEach((o) => {
       paymentMap[o.payment_method] = (paymentMap[o.payment_method] ?? 0) + 1;
     });
     const paymentDist = Object.entries(paymentMap).map(([name, value]) => ({
@@ -104,7 +106,7 @@ export default function ReportsPage() {
     }));
 
     const itemMap: Record<string, { name: string; quantity: number; revenue: number }> = {};
-    items.forEach(it => {
+    items.forEach((it) => {
       const k = it.item_name_snapshot;
       if (!itemMap[k]) itemMap[k] = { name: k, quantity: 0, revenue: 0 };
       itemMap[k].quantity += Number(it.quantity);
@@ -114,7 +116,15 @@ export default function ReportsPage() {
       .sort((a, b) => b.quantity - a.quantity)
       .slice(0, 10);
 
-    return { total, commission, restaurantEarning, count: orders.length, daily, paymentDist, topItems };
+    return {
+      total,
+      commission,
+      restaurantEarning,
+      count: orders.length,
+      daily,
+      paymentDist,
+      topItems,
+    };
   }, [data]);
 
   return (
@@ -124,34 +134,67 @@ export default function ReportsPage() {
       <Card className="mb-4">
         <CardContent>
           <div className="grid grid-cols-2 gap-3">
-            <Input label="Başlangıç" type="date" value={from} onChange={e => setFrom(e.target.value)} />
-            <Input label="Bitiş" type="date" value={to} onChange={e => setTo(e.target.value)} />
+            <Input
+              label="Başlangıç"
+              type="date"
+              value={from}
+              onChange={(e) => setFrom(e.target.value)}
+            />
+            <Input label="Bitiş" type="date" value={to} onChange={(e) => setTo(e.target.value)} />
           </div>
         </CardContent>
       </Card>
 
       {isLoading ? (
-        <Card><CardContent>Yükleniyor…</CardContent></Card>
+        <Card>
+          <CardContent>Yükleniyor…</CardContent>
+        </Card>
       ) : (
         <>
           <div className="mb-4 grid grid-cols-2 gap-4 md:grid-cols-4">
-            <Card><CardHeader><CardTitle className="text-sm text-gray-500">Toplam Sipariş</CardTitle></CardHeader>
-              <CardContent><p className="text-2xl font-semibold">{stats.count}</p></CardContent>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm text-gray-500">Toplam Sipariş</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-semibold">{stats.count}</p>
+              </CardContent>
             </Card>
-            <Card><CardHeader><CardTitle className="text-sm text-gray-500">Toplam Ciro</CardTitle></CardHeader>
-              <CardContent><p className="text-2xl font-semibold">{formatCurrency(stats.total)}</p></CardContent>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm text-gray-500">Toplam Ciro</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-semibold">{formatCurrency(stats.total)}</p>
+              </CardContent>
             </Card>
-            <Card><CardHeader><CardTitle className="text-sm text-gray-500">Komisyon</CardTitle></CardHeader>
-              <CardContent><p className="text-2xl font-semibold text-amber-600">{formatCurrency(stats.commission)}</p></CardContent>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm text-gray-500">Komisyon</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-semibold text-amber-600">
+                  {formatCurrency(stats.commission)}
+                </p>
+              </CardContent>
             </Card>
-            <Card><CardHeader><CardTitle className="text-sm text-gray-500">Kazancınız</CardTitle></CardHeader>
-              <CardContent><p className="text-2xl font-semibold text-green-600">{formatCurrency(stats.restaurantEarning)}</p></CardContent>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm text-gray-500">Kazancınız</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-semibold text-green-600">
+                  {formatCurrency(stats.restaurantEarning)}
+                </p>
+              </CardContent>
             </Card>
           </div>
 
           <div className="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Card>
-              <CardHeader><CardTitle>Günlük Satış</CardTitle></CardHeader>
+              <CardHeader>
+                <CardTitle>Günlük Satış</CardTitle>
+              </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={260}>
                   <BarChart data={stats.daily}>
@@ -165,11 +208,21 @@ export default function ReportsPage() {
               </CardContent>
             </Card>
             <Card>
-              <CardHeader><CardTitle>Ödeme Yöntemi</CardTitle></CardHeader>
+              <CardHeader>
+                <CardTitle>Ödeme Yöntemi</CardTitle>
+              </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={260}>
                   <PieChart>
-                    <Pie data={stats.paymentDist} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90} label>
+                    <Pie
+                      data={stats.paymentDist}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={90}
+                      label
+                    >
                       {stats.paymentDist.map((_, i) => (
                         <Cell key={i} fill={COLORS[i % COLORS.length]} />
                       ))}
@@ -183,11 +236,18 @@ export default function ReportsPage() {
           </div>
 
           <Card>
-            <CardHeader><CardTitle>En Çok Satan Ürünler (Top 10)</CardTitle></CardHeader>
+            <CardHeader>
+              <CardTitle>En Çok Satan Ürünler (Top 10)</CardTitle>
+            </CardHeader>
             <CardContent className="p-0">
               <Table>
                 <THead>
-                  <TR><TH>#</TH><TH>Ürün</TH><TH className="text-right">Adet</TH><TH className="text-right">Ciro</TH></TR>
+                  <TR>
+                    <TH>#</TH>
+                    <TH>Ürün</TH>
+                    <TH className="text-right">Adet</TH>
+                    <TH className="text-right">Ciro</TH>
+                  </TR>
                 </THead>
                 <TBody>
                   {stats.topItems.map((it, i) => (

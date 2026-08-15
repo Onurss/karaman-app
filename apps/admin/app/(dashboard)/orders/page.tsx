@@ -46,7 +46,10 @@ const PAYMENTS = [
   { value: 'card_on_delivery', label: 'Kapıda Kart' },
 ];
 
-const statusTone: Record<string, 'warning' | 'info' | 'primary' | 'success' | 'danger' | 'secondary'> = {
+const statusTone: Record<
+  string,
+  'warning' | 'info' | 'primary' | 'success' | 'danger' | 'secondary'
+> = {
   pending: 'warning',
   confirmed: 'info',
   preparing: 'primary',
@@ -150,11 +153,12 @@ export default function OrdersPage() {
     if (!data) return;
     exportToCSV(
       'siparisler',
-      data.map(o => ({
+      data.map((o) => ({
         order_number: o.order_number,
         created_at: formatDateTime(o.created_at),
-        status: STATUSES.find(s => s.value === o.status)?.label ?? o.status,
-        payment_method: PAYMENTS.find(p => p.value === o.payment_method)?.label ?? o.payment_method,
+        status: STATUSES.find((s) => s.value === o.status)?.label ?? o.status,
+        payment_method:
+          PAYMENTS.find((p) => p.value === o.payment_method)?.label ?? o.payment_method,
         payment_status: o.payment_status,
 
         restaurant: o.restaurants?.name ?? '',
@@ -189,24 +193,39 @@ export default function OrdersPage() {
       <Card className="mb-4">
         <CardContent>
           <div className="grid grid-cols-1 gap-3 md:grid-cols-5">
-            <Select label="Durum" value={status} onChange={e => setStatus(e.target.value)}>
-              {STATUSES.map(s => (
-                <option key={s.value} value={s.value}>{s.label}</option>
+            <Select label="Durum" value={status} onChange={(e) => setStatus(e.target.value)}>
+              {STATUSES.map((s) => (
+                <option key={s.value} value={s.value}>
+                  {s.label}
+                </option>
               ))}
             </Select>
-            <Select label="Ödeme" value={payment} onChange={e => setPayment(e.target.value)}>
-              {PAYMENTS.map(p => (
-                <option key={p.value} value={p.value}>{p.label}</option>
+            <Select label="Ödeme" value={payment} onChange={(e) => setPayment(e.target.value)}>
+              {PAYMENTS.map((p) => (
+                <option key={p.value} value={p.value}>
+                  {p.label}
+                </option>
               ))}
             </Select>
-            <Select label="Restoran" value={restaurantId} onChange={e => setRestaurantId(e.target.value)}>
+            <Select
+              label="Restoran"
+              value={restaurantId}
+              onChange={(e) => setRestaurantId(e.target.value)}
+            >
               <option value="">Tüm restoranlar</option>
-              {(restaurantsQuery.data ?? []).map(r => (
-                <option key={r.id} value={r.id}>{r.name}</option>
+              {(restaurantsQuery.data ?? []).map((r) => (
+                <option key={r.id} value={r.id}>
+                  {r.name}
+                </option>
               ))}
             </Select>
-            <Input label="Başlangıç" type="date" value={from} onChange={e => setFrom(e.target.value)} />
-            <Input label="Bitiş" type="date" value={to} onChange={e => setTo(e.target.value)} />
+            <Input
+              label="Başlangıç"
+              type="date"
+              value={from}
+              onChange={(e) => setFrom(e.target.value)}
+            />
+            <Input label="Bitiş" type="date" value={to} onChange={(e) => setTo(e.target.value)} />
           </div>
         </CardContent>
       </Card>
@@ -228,7 +247,7 @@ export default function OrdersPage() {
           <Input
             label="İptal sebebi"
             value={reason}
-            onChange={e => setReason(e.target.value)}
+            onChange={(e) => setReason(e.target.value)}
             placeholder="Müşteri talebi, stok yok, vb."
           />
           {cancelTarget?.payment_status === 'paid' ? (
@@ -236,12 +255,12 @@ export default function OrdersPage() {
               <input
                 type="checkbox"
                 checked={refundOnCancel}
-                onChange={e => setRefundOnCancel(e.target.checked)}
+                onChange={(e) => setRefundOnCancel(e.target.checked)}
                 className="mt-0.5"
               />
               <span>
-                Ödenen tutarı da iade et (payment_status &rarr; refunded). iyzico/Garanti
-                tarafında manuel iade ayrıca yapılmalıdır.
+                Ödenen tutarı da iade et (payment_status &rarr; refunded). iyzico/Garanti tarafında
+                manuel iade ayrıca yapılmalıdır.
               </span>
             </label>
           ) : null}
@@ -289,13 +308,13 @@ export default function OrdersPage() {
       >
         <div className="space-y-3">
           <div className="rounded-md bg-amber-50 p-3 text-sm text-amber-800">
-            Sipariş açık kalır, yalnızca payment_status &quot;refunded&quot; olur. Banka
-            tarafında iade ayrıca yapılmalıdır.
+            Sipariş açık kalır, yalnızca payment_status &quot;refunded&quot; olur. Banka tarafında
+            iade ayrıca yapılmalıdır.
           </div>
           <Input
             label="İade sebebi"
             value={reason}
-            onChange={e => setReason(e.target.value)}
+            onChange={(e) => setReason(e.target.value)}
             placeholder="Çift çekim, fiyat farkı, vb."
           />
         </div>
@@ -314,8 +333,7 @@ export default function OrdersPage() {
             isLoading={refundMutation.isPending}
             disabled={!reason.trim()}
             onClick={() =>
-              refundTarget &&
-              refundMutation.mutate({ id: refundTarget.id, reason: reason.trim() })
+              refundTarget && refundMutation.mutate({ id: refundTarget.id, reason: reason.trim() })
             }
           >
             <RotateCcw className="h-4 w-4" /> İadeyi Onayla
@@ -344,7 +362,7 @@ export default function OrdersPage() {
                 </TR>
               </THead>
               <TBody>
-                {data.map(o => {
+                {data.map((o) => {
                   const isCancelled = o.status === 'cancelled';
                   const isDelivered = o.status === 'delivered';
                   const isPaid = o.payment_status === 'paid';
@@ -355,15 +373,18 @@ export default function OrdersPage() {
                       <TD>{o.restaurants?.name ?? '—'}</TD>
                       <TD>
                         <Badge tone={statusTone[o.status] ?? 'neutral'}>
-                          {STATUSES.find(s => s.value === o.status)?.label ?? o.status}
+                          {STATUSES.find((s) => s.value === o.status)?.label ?? o.status}
                         </Badge>
                       </TD>
                       <TD className="text-xs text-gray-500">
-                        {PAYMENTS.find(p => p.value === o.payment_method)?.label ?? o.payment_method}
+                        {PAYMENTS.find((p) => p.value === o.payment_method)?.label ??
+                          o.payment_method}
                         {' · '}
                         <span className="uppercase">{o.payment_status}</span>
                       </TD>
-                      <TD className="text-right text-gray-500">{formatCurrency(o.commission_amount)}</TD>
+                      <TD className="text-right text-gray-500">
+                        {formatCurrency(o.commission_amount)}
+                      </TD>
                       <TD className="text-right font-medium">{formatCurrency(o.total_amount)}</TD>
                       <TD>
                         <div className="flex justify-end gap-1">

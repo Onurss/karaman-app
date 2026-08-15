@@ -1,12 +1,7 @@
 'use client';
 
 import { useCallback, useRef, useState } from 'react';
-import {
-  GoogleMap,
-  Marker,
-  Autocomplete,
-  useJsApiLoader,
-} from '@react-google-maps/api';
+import { GoogleMap, Marker, Autocomplete, useJsApiLoader } from '@react-google-maps/api';
 import { Loader2 } from 'lucide-react';
 import { KARAMAN_CENTER } from '@karaman/utils';
 
@@ -30,13 +25,10 @@ function extractDistrict(
   components: google.maps.GeocoderAddressComponent[] | undefined,
 ): string | undefined {
   if (!components) return undefined;
-  const find = (type: string) =>
-    components.find(c => c.types.includes(type))?.long_name;
+  const find = (type: string) => components.find((c) => c.types.includes(type))?.long_name;
   // TR: ilçe genelde administrative_area_level_2; il administrative_area_level_1
   return (
-    find('administrative_area_level_2') ??
-    find('locality') ??
-    find('administrative_area_level_1')
+    find('administrative_area_level_2') ?? find('locality') ?? find('administrative_area_level_1')
   );
 }
 
@@ -55,8 +47,7 @@ export function LocationPicker({ lat, lng, onChange }: Props) {
   });
 
   const mapRef = useRef<google.maps.Map | null>(null);
-  const [autocomplete, setAutocomplete] =
-    useState<google.maps.places.Autocomplete | null>(null);
+  const [autocomplete, setAutocomplete] = useState<google.maps.places.Autocomplete | null>(null);
 
   const position = {
     lat: typeof lat === 'number' && !Number.isNaN(lat) ? lat : KARAMAN_CENTER.lat,
@@ -138,7 +129,7 @@ export function LocationPicker({ lat, lng, onChange }: Props) {
         mapContainerStyle={CONTAINER_STYLE}
         center={position}
         zoom={13}
-        onLoad={m => {
+        onLoad={(m) => {
           mapRef.current = m;
         }}
         onClick={handleMapInteract}

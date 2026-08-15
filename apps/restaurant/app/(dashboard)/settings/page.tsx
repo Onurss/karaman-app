@@ -34,23 +34,25 @@ export default function SettingsPage() {
   const queryClient = useQueryClient();
   const restaurantQuery = useCurrentRestaurant();
   const restaurantId = restaurantQuery.data?.restaurant_id;
-  const restaurant = restaurantQuery.data?.restaurants as {
-    name: string;
-    phone: string;
-    logo_url: string | null;
-    cover_image_url: string | null;
-    min_order_amount: number;
-    delivery_fee: number;
-    estimated_delivery_minutes: number;
-    working_hours: WorkingHours;
-    is_open: boolean;
-    open_override: OpenOverride;
-    accepts_cash: boolean;
-    accepts_card_on_delivery: boolean;
-    accepts_online_payment: boolean;
-    location: GeoPoint | null;
-    delivery_zone: DeliveryZoneGeoJson | null;
-  } | undefined;
+  const restaurant = restaurantQuery.data?.restaurants as
+    | {
+        name: string;
+        phone: string;
+        logo_url: string | null;
+        cover_image_url: string | null;
+        min_order_amount: number;
+        delivery_fee: number;
+        estimated_delivery_minutes: number;
+        working_hours: WorkingHours;
+        is_open: boolean;
+        open_override: OpenOverride;
+        accepts_cash: boolean;
+        accepts_card_on_delivery: boolean;
+        accepts_online_payment: boolean;
+        location: GeoPoint | null;
+        delivery_zone: DeliveryZoneGeoJson | null;
+      }
+    | undefined;
 
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [coverUrl, setCoverUrl] = useState<string | null>(null);
@@ -110,7 +112,9 @@ export default function SettingsPage() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
-          <CardHeader><CardTitle>Anlık Durum</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle>Anlık Durum</CardTitle>
+          </CardHeader>
           <CardContent className="space-y-3">
             {(
               [
@@ -158,9 +162,7 @@ export default function SettingsPage() {
             <CardContent>
               <div className="grid gap-4 md:grid-cols-3">
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-gray-700">
-                    Logo
-                  </label>
+                  <label className="mb-2 block text-sm font-medium text-gray-700">Logo</label>
                   <ImageUpload
                     bucket="restaurant-assets"
                     pathPrefix={`${restaurantId}/logo`}
@@ -188,22 +190,41 @@ export default function SettingsPage() {
         ) : null}
 
         <Card>
-          <CardHeader><CardTitle>Teslimat & Sipariş</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle>Teslimat & Sipariş</CardTitle>
+          </CardHeader>
           <CardContent className="space-y-3">
-            <Input label="Min sipariş tutarı (₺)" type="number" value={minOrder} onChange={e => setMinOrder(e.target.value)} />
-            <Input label="Teslimat ücreti (₺)" type="number" value={deliveryFee} onChange={e => setDeliveryFee(e.target.value)} />
-            <Input label="Tahmini teslim süresi (dk)" type="number" value={estDelivery} onChange={e => setEstDelivery(e.target.value)} />
+            <Input
+              label="Min sipariş tutarı (₺)"
+              type="number"
+              value={minOrder}
+              onChange={(e) => setMinOrder(e.target.value)}
+            />
+            <Input
+              label="Teslimat ücreti (₺)"
+              type="number"
+              value={deliveryFee}
+              onChange={(e) => setDeliveryFee(e.target.value)}
+            />
+            <Input
+              label="Tahmini teslim süresi (dk)"
+              type="number"
+              value={estDelivery}
+              onChange={(e) => setEstDelivery(e.target.value)}
+            />
           </CardContent>
         </Card>
 
         <Card className="lg:col-span-2">
-          <CardHeader><CardTitle>Çalışma Saatleri</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle>Çalışma Saatleri</CardTitle>
+          </CardHeader>
           <CardContent className="space-y-2">
             <p className="mb-1 text-xs text-gray-500">
               &ldquo;Otomatik&rdquo; modda restoran bu saatlere göre açılıp kapanır. Gece yarısını
               aşan saatler (örn. 18:00–02:00) desteklenir.
             </p>
-            {WEEKDAYS.map(d => {
+            {WEEKDAYS.map((d) => {
               const hours = workingHours[d.key] ?? null;
               const isClosed = !hours;
               return (
@@ -213,7 +234,7 @@ export default function SettingsPage() {
                     <input
                       type="checkbox"
                       checked={!isClosed}
-                      onChange={e =>
+                      onChange={(e) =>
                         setWorkingHours({
                           ...workingHours,
                           [d.key]: e.target.checked ? { open: '09:00', close: '22:00' } : null,
@@ -226,7 +247,7 @@ export default function SettingsPage() {
                     type="time"
                     disabled={isClosed}
                     value={hours?.open ?? ''}
-                    onChange={e =>
+                    onChange={(e) =>
                       setWorkingHours({
                         ...workingHours,
                         [d.key]: { open: e.target.value, close: hours?.close ?? '22:00' },
@@ -238,7 +259,7 @@ export default function SettingsPage() {
                     type="time"
                     disabled={isClosed}
                     value={hours?.close ?? ''}
-                    onChange={e =>
+                    onChange={(e) =>
                       setWorkingHours({
                         ...workingHours,
                         [d.key]: { open: hours?.open ?? '09:00', close: e.target.value },
@@ -253,18 +274,32 @@ export default function SettingsPage() {
         </Card>
 
         <Card className="lg:col-span-2">
-          <CardHeader><CardTitle>Ödeme Yöntemleri</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle>Ödeme Yöntemleri</CardTitle>
+          </CardHeader>
           <CardContent className="space-y-2">
             <label className="flex items-center gap-2">
-              <input type="checkbox" checked={acceptsCash} onChange={e => setAcceptsCash(e.target.checked)} />
+              <input
+                type="checkbox"
+                checked={acceptsCash}
+                onChange={(e) => setAcceptsCash(e.target.checked)}
+              />
               Kapıda nakit
             </label>
             <label className="flex items-center gap-2">
-              <input type="checkbox" checked={acceptsCard} onChange={e => setAcceptsCard(e.target.checked)} />
+              <input
+                type="checkbox"
+                checked={acceptsCard}
+                onChange={(e) => setAcceptsCard(e.target.checked)}
+              />
               Kapıda kredi kartı
             </label>
             <label className="flex items-center gap-2">
-              <input type="checkbox" checked={acceptsOnline} onChange={e => setAcceptsOnline(e.target.checked)} />
+              <input
+                type="checkbox"
+                checked={acceptsOnline}
+                onChange={(e) => setAcceptsOnline(e.target.checked)}
+              />
               Online ödeme (iyzico / Garanti)
             </label>
           </CardContent>
@@ -285,14 +320,10 @@ export default function SettingsPage() {
                     | { type: 'MultiPolygon'; coordinates: number[][][][] }
                     | null
                 }
-                onSaved={() =>
-                  queryClient.invalidateQueries({ queryKey: ['current-restaurant'] })
-                }
+                onSaved={() => queryClient.invalidateQueries({ queryKey: ['current-restaurant'] })}
               />
             ) : (
-              <p className="text-sm text-gray-500">
-                Restoran yükleniyor…
-              </p>
+              <p className="text-sm text-gray-500">Restoran yükleniyor…</p>
             )}
           </CardContent>
         </Card>

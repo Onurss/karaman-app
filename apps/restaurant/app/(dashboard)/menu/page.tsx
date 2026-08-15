@@ -79,7 +79,11 @@ export default function MenuPage() {
 
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
-  const [categoryForm, setCategoryForm] = useState<CategoryForm>({ name: '', display_order: 1, is_active: true });
+  const [categoryForm, setCategoryForm] = useState<CategoryForm>({
+    name: '',
+    display_order: 1,
+    is_active: true,
+  });
   const [itemDialogOpen, setItemDialogOpen] = useState(false);
   const [itemForm, setItemForm] = useState<ItemForm>(EMPTY_ITEM);
 
@@ -142,7 +146,7 @@ export default function MenuPage() {
   const reorderCategory = useMutation({
     mutationFn: async ({ id, direction }: { id: string; direction: 'up' | 'down' }) => {
       const cats = categoriesQuery.data ?? [];
-      const idx = cats.findIndex(c => c.id === id);
+      const idx = cats.findIndex((c) => c.id === id);
       const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
       if (targetIdx < 0 || targetIdx >= cats.length) return;
       const a = cats[idx];
@@ -176,7 +180,12 @@ export default function MenuPage() {
         description: v.description || null,
         price: Number(v.price),
         image_url: v.image_url || null,
-        ingredients: v.ingredients ? v.ingredients.split(',').map(s => s.trim()).filter(Boolean) : [],
+        ingredients: v.ingredients
+          ? v.ingredients
+              .split(',')
+              .map((s) => s.trim())
+              .filter(Boolean)
+          : [],
         is_available: v.is_available,
         is_vegetarian: v.is_vegetarian,
         is_spicy: v.is_spicy,
@@ -202,7 +211,10 @@ export default function MenuPage() {
 
   const toggleAvailable = useMutation({
     mutationFn: async ({ id, value }: { id: string; value: boolean }) => {
-      const { error } = await supabase.from('menu_items').update({ is_available: value }).eq('id', id);
+      const { error } = await supabase
+        .from('menu_items')
+        .update({ is_available: value })
+        .eq('id', id);
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['menu-items'] }),
@@ -231,7 +243,11 @@ export default function MenuPage() {
               <Button
                 size="sm"
                 onClick={() => {
-                  setCategoryForm({ name: '', display_order: (categoriesQuery.data?.length ?? 0) + 1, is_active: true });
+                  setCategoryForm({
+                    name: '',
+                    display_order: (categoriesQuery.data?.length ?? 0) + 1,
+                    is_active: true,
+                  });
                   setCategoryDialogOpen(true);
                 }}
               >
@@ -252,19 +268,36 @@ export default function MenuPage() {
                   <span className="flex-1 text-sm font-medium">{c.name}</span>
                   <div className="opacity-0 group-hover:opacity-100">
                     {idx > 0 ? (
-                      <button onClick={e => { e.stopPropagation(); reorderCategory.mutate({ id: c.id, direction: 'up' }); }} className="p-1">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          reorderCategory.mutate({ id: c.id, direction: 'up' });
+                        }}
+                        className="p-1"
+                      >
                         <ChevronUp className="h-3 w-3 text-gray-500" />
                       </button>
                     ) : null}
                     {idx < arr.length - 1 ? (
-                      <button onClick={e => { e.stopPropagation(); reorderCategory.mutate({ id: c.id, direction: 'down' }); }} className="p-1">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          reorderCategory.mutate({ id: c.id, direction: 'down' });
+                        }}
+                        className="p-1"
+                      >
                         <ChevronDown className="h-3 w-3 text-gray-500" />
                       </button>
                     ) : null}
                     <button
-                      onClick={e => {
+                      onClick={(e) => {
                         e.stopPropagation();
-                        setCategoryForm({ id: c.id, name: c.name, display_order: c.display_order, is_active: c.is_active });
+                        setCategoryForm({
+                          id: c.id,
+                          name: c.name,
+                          display_order: c.display_order,
+                          is_active: c.is_active,
+                        });
                         setCategoryDialogOpen(true);
                       }}
                       className="p-1"
@@ -272,7 +305,10 @@ export default function MenuPage() {
                       <Pencil className="h-3 w-3 text-gray-500" />
                     </button>
                     <button
-                      onClick={e => { e.stopPropagation(); if (confirm('Kategori silinsin mi?')) deleteCategory.mutate(c.id); }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (confirm('Kategori silinsin mi?')) deleteCategory.mutate(c.id);
+                      }}
                       className="p-1"
                     >
                       <Trash2 className="h-3 w-3 text-red-500" />
@@ -288,7 +324,7 @@ export default function MenuPage() {
           <CardContent className="p-0">
             <div className="flex items-center justify-between p-4">
               <p className="text-sm font-semibold">
-                {categoriesQuery.data?.find(c => c.id === activeCategoryId)?.name ?? 'Ürünler'}
+                {categoriesQuery.data?.find((c) => c.id === activeCategoryId)?.name ?? 'Ürünler'}
               </p>
               {activeCategoryId ? (
                 <Button
@@ -316,7 +352,7 @@ export default function MenuPage() {
                   </TR>
                 </THead>
                 <TBody>
-                  {itemsQuery.data.map(it => (
+                  {itemsQuery.data.map((it) => (
                     <TR key={it.id}>
                       <TD className="font-medium">
                         <div className="flex items-center gap-2">
@@ -326,7 +362,9 @@ export default function MenuPage() {
                           {it.is_campaign ? <Badge tone="warning">Kampanya</Badge> : null}
                         </div>
                       </TD>
-                      <TD className="line-clamp-1 max-w-[280px] text-sm text-gray-500">{it.description ?? '—'}</TD>
+                      <TD className="line-clamp-1 max-w-[280px] text-sm text-gray-500">
+                        {it.description ?? '—'}
+                      </TD>
                       <TD className="text-right font-medium">
                         {it.is_campaign && it.original_price != null ? (
                           <span className="mr-1 text-xs font-normal text-gray-400 line-through">
@@ -345,10 +383,16 @@ export default function MenuPage() {
                           <Button
                             size="sm"
                             variant="ghost"
-                            onClick={() => toggleAvailable.mutate({ id: it.id, value: !it.is_available })}
+                            onClick={() =>
+                              toggleAvailable.mutate({ id: it.id, value: !it.is_available })
+                            }
                             title={it.is_available ? 'Stoktan kaldır' : 'Stoğa al'}
                           >
-                            {it.is_available ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                            {it.is_available ? (
+                              <EyeOff className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
+                            )}
                           </Button>
                           <Button
                             size="sm"
@@ -366,15 +410,20 @@ export default function MenuPage() {
                                 is_vegetarian: it.is_vegetarian,
                                 is_spicy: it.is_spicy,
                                 is_campaign: it.is_campaign ?? false,
-                                original_price: it.original_price != null ? String(it.original_price) : '',
-                                variants: ((it.variants as MenuItemVariantGroup[] | null) ?? []),
+                                original_price:
+                                  it.original_price != null ? String(it.original_price) : '',
+                                variants: (it.variants as MenuItemVariantGroup[] | null) ?? [],
                               });
                               setItemDialogOpen(true);
                             }}
                           >
                             <Pencil className="h-4 w-4" />
                           </Button>
-                          <Button size="sm" variant="ghost" onClick={() => confirm('Silinsin mi?') && deleteItem.mutate(it.id)}>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => confirm('Silinsin mi?') && deleteItem.mutate(it.id)}
+                          >
                             <Trash2 className="h-4 w-4 text-red-500" />
                           </Button>
                         </div>
@@ -388,26 +437,84 @@ export default function MenuPage() {
         </Card>
       </div>
 
-      <Dialog open={categoryDialogOpen} onClose={() => setCategoryDialogOpen(false)} title={categoryForm.id ? 'Kategori Düzenle' : 'Yeni Kategori'}>
-        <form onSubmit={e => { e.preventDefault(); saveCategory.mutate(categoryForm); }} className="space-y-3">
-          <Input label="Kategori Adı" value={categoryForm.name} onChange={e => setCategoryForm({ ...categoryForm, name: e.target.value })} required />
-          <Input label="Sıra" type="number" value={categoryForm.display_order} onChange={e => setCategoryForm({ ...categoryForm, display_order: Number(e.target.value) })} />
+      <Dialog
+        open={categoryDialogOpen}
+        onClose={() => setCategoryDialogOpen(false)}
+        title={categoryForm.id ? 'Kategori Düzenle' : 'Yeni Kategori'}
+      >
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            saveCategory.mutate(categoryForm);
+          }}
+          className="space-y-3"
+        >
+          <Input
+            label="Kategori Adı"
+            value={categoryForm.name}
+            onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })}
+            required
+          />
+          <Input
+            label="Sıra"
+            type="number"
+            value={categoryForm.display_order}
+            onChange={(e) =>
+              setCategoryForm({ ...categoryForm, display_order: Number(e.target.value) })
+            }
+          />
           <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={categoryForm.is_active} onChange={e => setCategoryForm({ ...categoryForm, is_active: e.target.checked })} />
+            <input
+              type="checkbox"
+              checked={categoryForm.is_active}
+              onChange={(e) => setCategoryForm({ ...categoryForm, is_active: e.target.checked })}
+            />
             Aktif
           </label>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setCategoryDialogOpen(false)}>Vazgeç</Button>
-            <Button type="submit" isLoading={saveCategory.isPending}>Kaydet</Button>
+            <Button type="button" variant="outline" onClick={() => setCategoryDialogOpen(false)}>
+              Vazgeç
+            </Button>
+            <Button type="submit" isLoading={saveCategory.isPending}>
+              Kaydet
+            </Button>
           </DialogFooter>
         </form>
       </Dialog>
 
-      <Dialog open={itemDialogOpen} onClose={() => setItemDialogOpen(false)} title={itemForm.id ? 'Ürün Düzenle' : 'Yeni Ürün'} size="lg">
-        <form onSubmit={e => { e.preventDefault(); saveItem.mutate(itemForm); }} className="space-y-3">
-          <Input label="Ürün Adı" value={itemForm.name} onChange={e => setItemForm({ ...itemForm, name: e.target.value })} required />
-          <Textarea label="Açıklama" value={itemForm.description} onChange={e => setItemForm({ ...itemForm, description: e.target.value })} rows={3} />
-          <Input label="Fiyat (₺)" type="number" step="0.01" value={itemForm.price} onChange={e => setItemForm({ ...itemForm, price: e.target.value })} required />
+      <Dialog
+        open={itemDialogOpen}
+        onClose={() => setItemDialogOpen(false)}
+        title={itemForm.id ? 'Ürün Düzenle' : 'Yeni Ürün'}
+        size="lg"
+      >
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            saveItem.mutate(itemForm);
+          }}
+          className="space-y-3"
+        >
+          <Input
+            label="Ürün Adı"
+            value={itemForm.name}
+            onChange={(e) => setItemForm({ ...itemForm, name: e.target.value })}
+            required
+          />
+          <Textarea
+            label="Açıklama"
+            value={itemForm.description}
+            onChange={(e) => setItemForm({ ...itemForm, description: e.target.value })}
+            rows={3}
+          />
+          <Input
+            label="Fiyat (₺)"
+            type="number"
+            step="0.01"
+            value={itemForm.price}
+            onChange={(e) => setItemForm({ ...itemForm, price: e.target.value })}
+            required
+          />
 
           {/* Kampanya — restoran detayında "Kampanyalar" bölümünde gösterilir */}
           <div className="space-y-2 rounded-md border p-3">
@@ -415,7 +522,7 @@ export default function MenuPage() {
               <input
                 type="checkbox"
                 checked={itemForm.is_campaign}
-                onChange={e => setItemForm({ ...itemForm, is_campaign: e.target.checked })}
+                onChange={(e) => setItemForm({ ...itemForm, is_campaign: e.target.checked })}
               />
               Kampanya ürünü
             </label>
@@ -426,7 +533,7 @@ export default function MenuPage() {
                   type="number"
                   step="0.01"
                   value={itemForm.original_price}
-                  onChange={e => setItemForm({ ...itemForm, original_price: e.target.value })}
+                  onChange={(e) => setItemForm({ ...itemForm, original_price: e.target.value })}
                   placeholder="Örn. 900"
                 />
                 <p className="text-xs text-gray-500">
@@ -442,14 +549,14 @@ export default function MenuPage() {
                 bucket="menu-images"
                 pathPrefix={`restaurants/${restaurantId}/menu`}
                 value={itemForm.image_url}
-                onChange={url => setItemForm({ ...itemForm, image_url: url ?? '' })}
+                onChange={(url) => setItemForm({ ...itemForm, image_url: url ?? '' })}
               />
             </div>
           ) : null}
           <Input
             label="İçindekiler (virgülle ayırın)"
             value={itemForm.ingredients}
-            onChange={e => setItemForm({ ...itemForm, ingredients: e.target.value })}
+            onChange={(e) => setItemForm({ ...itemForm, ingredients: e.target.value })}
             placeholder="Domates, mozarella, fesleğen"
           />
           <p className="text-xs text-gray-500">
@@ -470,7 +577,7 @@ export default function MenuPage() {
                 size="sm"
                 variant="outline"
                 onClick={() =>
-                  setItemForm(f => ({
+                  setItemForm((f) => ({
                     ...f,
                     variants: [
                       ...f.variants,
@@ -493,8 +600,8 @@ export default function MenuPage() {
                   <Input
                     value={g.name}
                     placeholder="Grup adı (örn. Ekstra Malzeme)"
-                    onChange={e =>
-                      setItemForm(f => {
+                    onChange={(e) =>
+                      setItemForm((f) => {
                         const variants = [...f.variants];
                         variants[gi] = { ...variants[gi], name: e.target.value };
                         return { ...f, variants };
@@ -505,7 +612,7 @@ export default function MenuPage() {
                     type="button"
                     className="p-1"
                     onClick={() =>
-                      setItemForm(f => ({
+                      setItemForm((f) => ({
                         ...f,
                         variants: f.variants.filter((_, i) => i !== gi),
                       }))
@@ -520,8 +627,8 @@ export default function MenuPage() {
                     <input
                       type="checkbox"
                       checked={g.required}
-                      onChange={e =>
-                        setItemForm(f => {
+                      onChange={(e) =>
+                        setItemForm((f) => {
                           const variants = [...f.variants];
                           variants[gi] = { ...variants[gi], required: e.target.checked };
                           return { ...f, variants };
@@ -534,8 +641,8 @@ export default function MenuPage() {
                     <input
                       type="checkbox"
                       checked={g.multi_select}
-                      onChange={e =>
-                        setItemForm(f => {
+                      onChange={(e) =>
+                        setItemForm((f) => {
                           const variants = [...f.variants];
                           variants[gi] = { ...variants[gi], multi_select: e.target.checked };
                           return { ...f, variants };
@@ -551,8 +658,8 @@ export default function MenuPage() {
                     <Input
                       value={o.name}
                       placeholder="Seçenek adı"
-                      onChange={e =>
-                        setItemForm(f => {
+                      onChange={(e) =>
+                        setItemForm((f) => {
                           const variants = [...f.variants];
                           const options = [...variants[gi].options];
                           options[oi] = { ...options[oi], name: e.target.value };
@@ -567,11 +674,14 @@ export default function MenuPage() {
                       className="w-28"
                       value={String(o.price_delta)}
                       placeholder="+₺"
-                      onChange={e =>
-                        setItemForm(f => {
+                      onChange={(e) =>
+                        setItemForm((f) => {
                           const variants = [...f.variants];
                           const options = [...variants[gi].options];
-                          options[oi] = { ...options[oi], price_delta: Number(e.target.value) || 0 };
+                          options[oi] = {
+                            ...options[oi],
+                            price_delta: Number(e.target.value) || 0,
+                          };
                           variants[gi] = { ...variants[gi], options };
                           return { ...f, variants };
                         })
@@ -581,7 +691,7 @@ export default function MenuPage() {
                       type="button"
                       className="p-1"
                       onClick={() =>
-                        setItemForm(f => {
+                        setItemForm((f) => {
                           const variants = [...f.variants];
                           variants[gi] = {
                             ...variants[gi],
@@ -601,7 +711,7 @@ export default function MenuPage() {
                   size="sm"
                   variant="ghost"
                   onClick={() =>
-                    setItemForm(f => {
+                    setItemForm((f) => {
                       const variants = [...f.variants];
                       variants[gi] = {
                         ...variants[gi],
@@ -621,21 +731,37 @@ export default function MenuPage() {
           </div>
           <div className="flex gap-4">
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={itemForm.is_available} onChange={e => setItemForm({ ...itemForm, is_available: e.target.checked })} />
+              <input
+                type="checkbox"
+                checked={itemForm.is_available}
+                onChange={(e) => setItemForm({ ...itemForm, is_available: e.target.checked })}
+              />
               Stokta
             </label>
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={itemForm.is_vegetarian} onChange={e => setItemForm({ ...itemForm, is_vegetarian: e.target.checked })} />
+              <input
+                type="checkbox"
+                checked={itemForm.is_vegetarian}
+                onChange={(e) => setItemForm({ ...itemForm, is_vegetarian: e.target.checked })}
+              />
               Vejetaryen
             </label>
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={itemForm.is_spicy} onChange={e => setItemForm({ ...itemForm, is_spicy: e.target.checked })} />
+              <input
+                type="checkbox"
+                checked={itemForm.is_spicy}
+                onChange={(e) => setItemForm({ ...itemForm, is_spicy: e.target.checked })}
+              />
               Acılı
             </label>
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setItemDialogOpen(false)}>Vazgeç</Button>
-            <Button type="submit" isLoading={saveItem.isPending}>Kaydet</Button>
+            <Button type="button" variant="outline" onClick={() => setItemDialogOpen(false)}>
+              Vazgeç
+            </Button>
+            <Button type="submit" isLoading={saveItem.isPending}>
+              Kaydet
+            </Button>
           </DialogFooter>
         </form>
       </Dialog>

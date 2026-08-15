@@ -33,12 +33,12 @@ export const step2Schema = z.object({
   district: z.enum(KARAMAN_DISTRICTS, {
     errorMap: () => ({ message: 'Geçerli bir ilçe seçin' }),
   }),
-  lat: z
-    .coerce.number()
+  lat: z.coerce
+    .number()
     .gte(KARAMAN_BOUNDS.south, `Enlem ${KARAMAN_BOUNDS.south}'in altında olamaz`)
     .lte(KARAMAN_BOUNDS.north, `Enlem ${KARAMAN_BOUNDS.north}'i geçemez`),
-  lng: z
-    .coerce.number()
+  lng: z.coerce
+    .number()
     .gte(KARAMAN_BOUNDS.west, `Boylam ${KARAMAN_BOUNDS.west}'in altında olamaz`)
     .lte(KARAMAN_BOUNDS.east, `Boylam ${KARAMAN_BOUNDS.east}'i geçemez`),
   min_order_amount: z.coerce.number().min(0, 'Negatif olamaz'),
@@ -112,9 +112,34 @@ export const STEP_SCHEMAS = [
 ] as const;
 
 export const STEP_FIELDS: Array<Array<keyof RestaurantFormValues>> = [
-  ['name', 'slug', 'description', 'phone', 'email', 'tax_office', 'tax_number', 'cuisine_types', 'logo_url', 'cover_image_url'],
-  ['address', 'district', 'lat', 'lng', 'min_order_amount', 'delivery_fee', 'estimated_delivery_minutes'],
+  [
+    'name',
+    'slug',
+    'description',
+    'phone',
+    'email',
+    'tax_office',
+    'tax_number',
+    'cuisine_types',
+    'logo_url',
+    'cover_image_url',
+  ],
+  [
+    'address',
+    'district',
+    'lat',
+    'lng',
+    'min_order_amount',
+    'delivery_fee',
+    'estimated_delivery_minutes',
+  ],
   ['working_hours'],
-  ['commission_rate', 'subscription_tier', 'accepts_cash', 'accepts_card_on_delivery', 'accepts_online_payment'],
+  [
+    'commission_rate',
+    'subscription_tier',
+    'accepts_cash',
+    'accepts_card_on_delivery',
+    'accepts_online_payment',
+  ],
   ['owner_name', 'owner_email', 'owner_password'],
 ];

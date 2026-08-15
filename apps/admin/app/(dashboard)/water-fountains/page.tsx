@@ -56,10 +56,7 @@ export default function WaterFountainsAdminPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['admin-water-fountains'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('water_fountains_view')
-        .select('*')
-        .order('name');
+      const { data, error } = await supabase.from('water_fountains_view').select('*').order('name');
       if (error) throw error;
       return data;
     },
@@ -109,7 +106,12 @@ export default function WaterFountainsAdminPage() {
         title="Su Vezneleri"
         description="Karaman'daki içme suyu çeşmelerini yönetin."
         actions={
-          <Button onClick={() => { setForm(empty); setDialogOpen(true); }}>
+          <Button
+            onClick={() => {
+              setForm(empty);
+              setDialogOpen(true);
+            }}
+          >
             <Plus className="h-4 w-4" /> Yeni Su Veznesi
           </Button>
         }
@@ -134,7 +136,7 @@ export default function WaterFountainsAdminPage() {
                 </TR>
               </THead>
               <TBody>
-                {data.map(w => (
+                {data.map((w) => (
                   <TR key={w.id}>
                     <TD className="font-medium">{w.name}</TD>
                     <TD>{w.district}</TD>
@@ -184,11 +186,36 @@ export default function WaterFountainsAdminPage() {
         </CardContent>
       </Card>
 
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} title={form.id ? 'Su Veznesi Düzenle' : 'Yeni Su Veznesi'}>
-        <form onSubmit={e => { e.preventDefault(); save.mutate(form); }} className="space-y-3">
-          <Input label="Adı" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required />
-          <Input label="Adres" value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} required />
-          <Input label="İlçe" value={form.district} onChange={e => setForm({ ...form, district: e.target.value })} required />
+      <Dialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        title={form.id ? 'Su Veznesi Düzenle' : 'Yeni Su Veznesi'}
+      >
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            save.mutate(form);
+          }}
+          className="space-y-3"
+        >
+          <Input
+            label="Adı"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            required
+          />
+          <Input
+            label="Adres"
+            value={form.address}
+            onChange={(e) => setForm({ ...form, address: e.target.value })}
+            required
+          />
+          <Input
+            label="İlçe"
+            value={form.district}
+            onChange={(e) => setForm({ ...form, district: e.target.value })}
+            required
+          />
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
@@ -197,15 +224,14 @@ export default function WaterFountainsAdminPage() {
             <LocationPicker
               lat={Number(form.lat)}
               lng={Number(form.lng)}
-              onChange={loc =>
-                setForm(f => ({
+              onChange={(loc) =>
+                setForm((f) => ({
                   ...f,
                   lat: String(loc.lat),
                   lng: String(loc.lng),
                   address: loc.address ?? f.address,
                   district:
-                    loc.district &&
-                    (KARAMAN_DISTRICTS as readonly string[]).includes(loc.district)
+                    loc.district && (KARAMAN_DISTRICTS as readonly string[]).includes(loc.district)
                       ? loc.district
                       : f.district,
                 }))
@@ -214,18 +240,41 @@ export default function WaterFountainsAdminPage() {
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <Input label="Enlem" value={form.lat} onChange={e => setForm({ ...form, lat: e.target.value })} required />
-            <Input label="Boylam" value={form.lng} onChange={e => setForm({ ...form, lng: e.target.value })} required />
+            <Input
+              label="Enlem"
+              value={form.lat}
+              onChange={(e) => setForm({ ...form, lat: e.target.value })}
+              required
+            />
+            <Input
+              label="Boylam"
+              value={form.lng}
+              onChange={(e) => setForm({ ...form, lng: e.target.value })}
+              required
+            />
           </div>
-          <Textarea label="Notlar" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} rows={2} />
+          <Textarea
+            label="Notlar"
+            value={form.notes}
+            onChange={(e) => setForm({ ...form, notes: e.target.value })}
+            rows={2}
+          />
           <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={form.is_active} onChange={e => setForm({ ...form, is_active: e.target.checked })} />
+            <input
+              type="checkbox"
+              checked={form.is_active}
+              onChange={(e) => setForm({ ...form, is_active: e.target.checked })}
+            />
             Aktif
           </label>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>Vazgeç</Button>
-            <Button type="submit" isLoading={save.isPending}>Kaydet</Button>
+            <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
+              Vazgeç
+            </Button>
+            <Button type="submit" isLoading={save.isPending}>
+              Kaydet
+            </Button>
           </DialogFooter>
         </form>
       </Dialog>

@@ -1,8 +1,4 @@
-import axios, {
-  type AxiosInstance,
-  type AxiosError,
-  type InternalAxiosRequestConfig,
-} from 'axios';
+import axios, { type AxiosInstance, type AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import { ApiError } from './errors';
 
 export interface KaramanClientOptions {
@@ -21,7 +17,7 @@ export function createKaramanApiClient(options: KaramanClientOptions): KaramanAp
     timeout: options.timeoutMs ?? 10_000,
     headers: {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'X-API-Key': options.apiKey,
     },
   });
@@ -37,7 +33,7 @@ export function createKaramanApiClient(options: KaramanClientOptions): KaramanAp
   });
 
   client.interceptors.response.use(
-    response => response,
+    (response) => response,
     async (error: AxiosError) => {
       const apiError = ApiError.fromAxios(error);
       if (apiError.statusCode === 401 && options.onUnauthorized) {

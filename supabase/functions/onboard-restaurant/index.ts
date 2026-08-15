@@ -28,15 +28,13 @@ const schema = z.object({
   accepts_cash: z.boolean().default(true),
   accepts_card_on_delivery: z.boolean().default(true),
   accepts_online_payment: z.boolean().default(true),
-  working_hours: z
-    .record(z.object({ open: z.string(), close: z.string() }).nullable())
-    .default({}),
+  working_hours: z.record(z.object({ open: z.string(), close: z.string() }).nullable()).default({}),
   owner_name: z.string().min(2).max(120),
   owner_email: z.string().email(),
   owner_password: z.string().min(8).max(72),
 });
 
-serve(async req => {
+serve(async (req) => {
   const cors = handleCors(req);
   if (cors) return cors;
 

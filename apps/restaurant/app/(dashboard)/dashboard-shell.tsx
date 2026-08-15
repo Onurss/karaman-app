@@ -40,7 +40,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           <p className="text-xs text-slate-500">Yönetim Paneli</p>
         </div>
         <nav className="flex-1 space-y-1 px-3">
-          {navItems.map(item => {
+          {navItems.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href;
             return (
@@ -49,9 +49,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
                 href={item.href}
                 className={cn(
                   'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition',
-                  active
-                    ? 'bg-slate-900 text-white'
-                    : 'text-slate-600 hover:bg-slate-100',
+                  active ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100',
                 )}
               >
                 <Icon className="h-4 w-4" />

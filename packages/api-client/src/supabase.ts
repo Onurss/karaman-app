@@ -18,9 +18,7 @@ export interface CreateSupabaseOptions {
 
 export type KaramanSupabaseClient = SupabaseClient<Database>;
 
-export function createKaramanSupabaseClient(
-  options: CreateSupabaseOptions,
-): KaramanSupabaseClient {
+export function createKaramanSupabaseClient(options: CreateSupabaseOptions): KaramanSupabaseClient {
   return createClient<Database>(options.url, options.anonKey, {
     auth: {
       storage: options.storage,

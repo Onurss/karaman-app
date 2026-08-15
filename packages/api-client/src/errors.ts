@@ -41,9 +41,7 @@ export class ApiError extends Error {
     if (!response) {
       const code = error.code === 'ECONNABORTED' ? 'TIMEOUT' : 'NETWORK';
       const message =
-        code === 'TIMEOUT'
-          ? 'İstek zaman aşımına uğradı.'
-          : 'İnternet bağlantınızı kontrol edin.';
+        code === 'TIMEOUT' ? 'İstek zaman aşımına uğradı.' : 'İnternet bağlantınızı kontrol edin.';
       return new ApiError({
         code,
         message: error.message,

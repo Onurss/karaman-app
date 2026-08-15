@@ -6,18 +6,7 @@ import { toast } from 'sonner';
 import { getSupabaseBrowser } from '@/lib/supabase';
 import { formatDateTime } from '@/lib/format';
 import { PAGINATION } from '@karaman/utils';
-import {
-  Badge,
-  Card,
-  CardContent,
-  Empty,
-  Table,
-  TBody,
-  TD,
-  TH,
-  THead,
-  TR,
-} from '@/components/ui';
+import { Badge, Card, CardContent, Empty, Table, TBody, TD, TH, THead, TR } from '@/components/ui';
 
 type Segment = 'all' | 'food_customers';
 
@@ -48,7 +37,9 @@ export default function PushPage() {
       const supabase = getSupabaseBrowser() as any;
       const { data, error } = await supabase
         .from('push_notifications')
-        .select('id, title, body, deep_link, target_segment, status, delivered_count, failed_count, sent_at, created_at')
+        .select(
+          'id, title, body, deep_link, target_segment, status, delivered_count, failed_count, sent_at, created_at',
+        )
         .order('created_at', { ascending: false })
         .limit(PAGINATION.pushHistoryLimit);
       if (error) throw error;
@@ -68,8 +59,7 @@ export default function PushPage() {
           title,
           body,
           deep_link: deepLink || null,
-          target_segment:
-            segment === 'food_customers' ? { food_customers: true } : { all: true },
+          target_segment: segment === 'food_customers' ? { food_customers: true } : { all: true },
         })
         .select()
         .single();
@@ -90,7 +80,10 @@ export default function PushPage() {
     }
   }
 
-  const statusTone: Record<PushNotificationRow['status'], 'warning' | 'info' | 'success' | 'danger'> = {
+  const statusTone: Record<
+    PushNotificationRow['status'],
+    'warning' | 'info' | 'success' | 'danger'
+  > = {
     pending: 'warning',
     sending: 'info',
     sent: 'success',
@@ -117,7 +110,7 @@ export default function PushPage() {
               className="input"
               maxLength={50}
               value={title}
-              onChange={e => setTitle(e.target.value)}
+              onChange={(e) => setTitle(e.target.value)}
               required
             />
           </div>
@@ -127,7 +120,7 @@ export default function PushPage() {
               className="input min-h-[100px]"
               maxLength={200}
               value={body}
-              onChange={e => setBody(e.target.value)}
+              onChange={(e) => setBody(e.target.value)}
               required
             />
           </div>
@@ -137,7 +130,7 @@ export default function PushPage() {
               className="input"
               placeholder="karaman://news/1234"
               value={deepLink}
-              onChange={e => setDeepLink(e.target.value)}
+              onChange={(e) => setDeepLink(e.target.value)}
             />
           </div>
           <div>
@@ -145,7 +138,7 @@ export default function PushPage() {
             <select
               className="input"
               value={segment}
-              onChange={e => setSegment(e.target.value as Segment)}
+              onChange={(e) => setSegment(e.target.value as Segment)}
             >
               <option value="all">Tüm kullanıcılar</option>
               <option value="food_customers">Yemek müşterileri</option>
@@ -167,7 +160,9 @@ export default function PushPage() {
 
       <div>
         <h2 className="text-lg font-semibold text-slate-900">Gönderim Geçmişi</h2>
-        <p className="mb-2 text-xs text-slate-500">Son 100 push bildirimi. Her 30 saniyede bir tazelenir.</p>
+        <p className="mb-2 text-xs text-slate-500">
+          Son 100 push bildirimi. Her 30 saniyede bir tazelenir.
+        </p>
         <Card>
           <CardContent className="p-0">
             {historyQuery.isLoading ? (
@@ -187,12 +182,11 @@ export default function PushPage() {
                   </TR>
                 </THead>
                 <TBody>
-                  {historyQuery.data.map(p => {
+                  {historyQuery.data.map((p) => {
                     const segments = Object.keys(p.target_segment ?? {});
-                    const targetLabel =
-                      segments.includes('all')
-                        ? 'Tüm kullanıcılar'
-                        : segments.includes('food_customers')
+                    const targetLabel = segments.includes('all')
+                      ? 'Tüm kullanıcılar'
+                      : segments.includes('food_customers')
                         ? 'Yemek müşterileri'
                         : segments.join(', ') || '—';
                     return (

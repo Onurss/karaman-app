@@ -17,8 +17,7 @@ export function formatCurrency(
     return `${compactValue} bin${withSymbol ? ' ₺' : ''}`;
   }
 
-  const fractionDigits =
-    maximumFractionDigits ?? (Number.isInteger(amount) ? 0 : 2);
+  const fractionDigits = maximumFractionDigits ?? (Number.isInteger(amount) ? 0 : 2);
 
   return new Intl.NumberFormat('tr-TR', {
     style: withSymbol ? 'currency' : 'decimal',

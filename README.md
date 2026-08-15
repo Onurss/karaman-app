@@ -89,6 +89,7 @@ pnpm format:check    # Sadece kontrol et
 [Conventional Commits](https://www.conventionalcommits.org/) zorunlu. Husky + commitlint ile pre-commit hook'larla doğrulanır.
 
 Tipler:
+
 - `feat` — yeni özellik
 - `fix` — hata düzeltme
 - `docs` — dokümantasyon
@@ -104,6 +105,7 @@ Tipler:
 Scope'lar: `mobile`, `admin`, `restaurant`, `shared-types`, `api-client`, `utils`, `supabase`, `docs`, `deps`, `ci`, `config`.
 
 Örnek:
+
 ```
 feat(mobile): haber detay ekranı eklendi
 fix(admin): banner upload hatası giderildi

@@ -27,7 +27,13 @@ import {
 import { LocationPicker } from '@/components/ui/location-picker';
 import { STEP_SCHEMAS, validatePaymentMethods } from '@/lib/schemas/restaurant';
 
-const STEPS = ['Genel Bilgiler', 'Konum & Teslimat', 'Çalışma Saatleri', 'Komisyon & Abonelik', 'Sahip Hesabı'] as const;
+const STEPS = [
+  'Genel Bilgiler',
+  'Konum & Teslimat',
+  'Çalışma Saatleri',
+  'Komisyon & Abonelik',
+  'Sahip Hesabı',
+] as const;
 
 const RESTAURANT_DEFAULTS = {
   minOrderAmount: 100,
@@ -149,7 +155,10 @@ export default function NewRestaurantPage() {
           district: form.district,
           lat: Number(form.lat),
           lng: Number(form.lng),
-          cuisine_types: form.cuisine_types.split(',').map(s => s.trim()).filter(Boolean),
+          cuisine_types: form.cuisine_types
+            .split(',')
+            .map((s) => s.trim())
+            .filter(Boolean),
           min_order_amount: Number(form.min_order_amount),
           delivery_fee: Number(form.delivery_fee),
           estimated_delivery_minutes: Number(form.estimated_delivery_minutes),
@@ -177,7 +186,7 @@ export default function NewRestaurantPage() {
       }
       return data.data as { restaurant_id: string; name: string };
     },
-    onSuccess: r => {
+    onSuccess: (r) => {
       toast.success(`${r.name} eklendi.`);
       router.push('/restaurants');
     },
@@ -186,9 +195,9 @@ export default function NewRestaurantPage() {
 
   const next = () => {
     if (!validateCurrentStep()) return;
-    setStep(s => Math.min(STEPS.length - 1, s + 1));
+    setStep((s) => Math.min(STEPS.length - 1, s + 1));
   };
-  const prev = () => setStep(s => Math.max(0, s - 1));
+  const prev = () => setStep((s) => Math.max(0, s - 1));
 
   const handleSubmit = () => {
     if (!validateCurrentStep()) return;
@@ -204,12 +213,20 @@ export default function NewRestaurantPage() {
           <div className="flex items-center justify-between gap-2">
             {STEPS.map((s, i) => (
               <div key={s} className="flex flex-1 items-center gap-2">
-                <div className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold ${
-                  i === step ? 'bg-primary text-white' : i < step ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'
-                }`}>
+                <div
+                  className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold ${
+                    i === step
+                      ? 'bg-primary text-white'
+                      : i < step
+                        ? 'bg-green-500 text-white'
+                        : 'bg-gray-200 text-gray-500'
+                  }`}
+                >
                   {i < step ? <Check className="h-4 w-4" /> : i + 1}
                 </div>
-                <span className={`text-xs ${i === step ? 'font-semibold' : 'text-gray-500'}`}>{s}</span>
+                <span className={`text-xs ${i === step ? 'font-semibold' : 'text-gray-500'}`}>
+                  {s}
+                </span>
                 {i < STEPS.length - 1 ? <div className="h-px flex-1 bg-gray-200" /> : null}
               </div>
             ))}
@@ -218,34 +235,88 @@ export default function NewRestaurantPage() {
       </Card>
 
       <Card>
-        <CardHeader><CardTitle>{STEPS[step]}</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle>{STEPS[step]}</CardTitle>
+        </CardHeader>
         <CardContent className="space-y-4">
           {step === 0 ? (
             <>
               <div className="grid grid-cols-2 gap-3">
-                <Input label="Restoran Adı" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required />
-                <Input label="Slug" value={slug} onChange={e => setForm({ ...form, slug: e.target.value })} hint="URL'de görünür" />
+                <Input
+                  label="Restoran Adı"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  required
+                />
+                <Input
+                  label="Slug"
+                  value={slug}
+                  onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                  hint="URL'de görünür"
+                />
               </div>
-              <Textarea label="Açıklama" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={3} />
+              <Textarea
+                label="Açıklama"
+                value={form.description}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                rows={3}
+              />
               <div className="grid grid-cols-2 gap-3">
-                <Input label="Telefon" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="+905..." required />
-                <Input label="E-posta" type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
+                <Input
+                  label="Telefon"
+                  value={form.phone}
+                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                  placeholder="+905..."
+                  required
+                />
+                <Input
+                  label="E-posta"
+                  type="email"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                />
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <Input label="Vergi Dairesi" value={form.tax_office} onChange={e => setForm({ ...form, tax_office: e.target.value })} />
-                <Input label="Vergi No" value={form.tax_number} onChange={e => setForm({ ...form, tax_number: e.target.value })} />
+                <Input
+                  label="Vergi Dairesi"
+                  value={form.tax_office}
+                  onChange={(e) => setForm({ ...form, tax_office: e.target.value })}
+                />
+                <Input
+                  label="Vergi No"
+                  value={form.tax_number}
+                  onChange={(e) => setForm({ ...form, tax_number: e.target.value })}
+                />
               </div>
-              <Input label="Mutfak türleri (virgülle ayırın)" value={form.cuisine_types} onChange={e => setForm({ ...form, cuisine_types: e.target.value })} placeholder="Pizza, Türk Mutfağı, ..." />
+              <Input
+                label="Mutfak türleri (virgülle ayırın)"
+                value={form.cuisine_types}
+                onChange={(e) => setForm({ ...form, cuisine_types: e.target.value })}
+                placeholder="Pizza, Türk Mutfağı, ..."
+              />
               <div className="grid grid-cols-2 gap-3">
-                <Input label="Logo URL" value={form.logo_url} onChange={e => setForm({ ...form, logo_url: e.target.value })} />
-                <Input label="Kapak Görsel URL" value={form.cover_image_url} onChange={e => setForm({ ...form, cover_image_url: e.target.value })} />
+                <Input
+                  label="Logo URL"
+                  value={form.logo_url}
+                  onChange={(e) => setForm({ ...form, logo_url: e.target.value })}
+                />
+                <Input
+                  label="Kapak Görsel URL"
+                  value={form.cover_image_url}
+                  onChange={(e) => setForm({ ...form, cover_image_url: e.target.value })}
+                />
               </div>
             </>
           ) : null}
 
           {step === 1 ? (
             <>
-              <Input label="Adres" value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} required />
+              <Input
+                label="Adres"
+                value={form.address}
+                onChange={(e) => setForm({ ...form, address: e.target.value })}
+                required
+              />
 
               <div>
                 <label className="mb-1 block text-sm font-medium text-gray-700">
@@ -254,8 +325,8 @@ export default function NewRestaurantPage() {
                 <LocationPicker
                   lat={Number(form.lat)}
                   lng={Number(form.lng)}
-                  onChange={loc =>
-                    setForm(f => ({
+                  onChange={(loc) =>
+                    setForm((f) => ({
                       ...f,
                       lat: String(loc.lat),
                       lng: String(loc.lng),
@@ -271,23 +342,53 @@ export default function NewRestaurantPage() {
               </div>
 
               <div className="grid grid-cols-3 gap-3">
-                <Select label="İlçe" value={form.district} onChange={e => setForm({ ...form, district: e.target.value })} required>
-                  {KARAMAN_DISTRICTS.map(d => (
+                <Select
+                  label="İlçe"
+                  value={form.district}
+                  onChange={(e) => setForm({ ...form, district: e.target.value })}
+                  required
+                >
+                  {KARAMAN_DISTRICTS.map((d) => (
                     <option key={d} value={d}>
                       {d}
                     </option>
                   ))}
                 </Select>
-                <Input label="Enlem (lat)" value={form.lat} onChange={e => setForm({ ...form, lat: e.target.value })} required />
-                <Input label="Boylam (lng)" value={form.lng} onChange={e => setForm({ ...form, lng: e.target.value })} required />
+                <Input
+                  label="Enlem (lat)"
+                  value={form.lat}
+                  onChange={(e) => setForm({ ...form, lat: e.target.value })}
+                  required
+                />
+                <Input
+                  label="Boylam (lng)"
+                  value={form.lng}
+                  onChange={(e) => setForm({ ...form, lng: e.target.value })}
+                  required
+                />
               </div>
               <p className="text-xs text-gray-500">
                 Karaman Merkez: {KARAMAN_CENTER.lat}, {KARAMAN_CENTER.lng}
               </p>
               <div className="grid grid-cols-3 gap-3">
-                <Input label="Tahmini teslim süresi (dk)" type="number" value={form.estimated_delivery_minutes} onChange={e => setForm({ ...form, estimated_delivery_minutes: e.target.value })} />
-                <Input label="Min sipariş tutarı (₺)" type="number" value={form.min_order_amount} onChange={e => setForm({ ...form, min_order_amount: e.target.value })} />
-                <Input label="Teslimat ücreti (₺)" type="number" value={form.delivery_fee} onChange={e => setForm({ ...form, delivery_fee: e.target.value })} />
+                <Input
+                  label="Tahmini teslim süresi (dk)"
+                  type="number"
+                  value={form.estimated_delivery_minutes}
+                  onChange={(e) => setForm({ ...form, estimated_delivery_minutes: e.target.value })}
+                />
+                <Input
+                  label="Min sipariş tutarı (₺)"
+                  type="number"
+                  value={form.min_order_amount}
+                  onChange={(e) => setForm({ ...form, min_order_amount: e.target.value })}
+                />
+                <Input
+                  label="Teslimat ücreti (₺)"
+                  type="number"
+                  value={form.delivery_fee}
+                  onChange={(e) => setForm({ ...form, delivery_fee: e.target.value })}
+                />
               </div>
             </>
           ) : null}
@@ -308,7 +409,7 @@ export default function NewRestaurantPage() {
                       <input
                         type="checkbox"
                         checked={!closed}
-                        onChange={e =>
+                        onChange={(e) =>
                           setForm({
                             ...form,
                             working_hours: {
@@ -324,7 +425,7 @@ export default function NewRestaurantPage() {
                       type="time"
                       disabled={closed}
                       value={hours?.open ?? ''}
-                      onChange={e =>
+                      onChange={(e) =>
                         setForm({
                           ...form,
                           working_hours: {
@@ -339,7 +440,7 @@ export default function NewRestaurantPage() {
                       type="time"
                       disabled={closed}
                       value={hours?.close ?? ''}
-                      onChange={e =>
+                      onChange={(e) =>
                         setForm({
                           ...form,
                           working_hours: {
@@ -358,11 +459,21 @@ export default function NewRestaurantPage() {
 
           {step === 3 ? (
             <>
-              <Input label="Komisyon (%)" type="number" value={form.commission_rate} onChange={e => setForm({ ...form, commission_rate: e.target.value })} />
+              <Input
+                label="Komisyon (%)"
+                type="number"
+                value={form.commission_rate}
+                onChange={(e) => setForm({ ...form, commission_rate: e.target.value })}
+              />
               <Select
                 label="Abonelik Tier"
                 value={form.subscription_tier}
-                onChange={e => setForm({ ...form, subscription_tier: e.target.value as FormState['subscription_tier'] })}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    subscription_tier: e.target.value as FormState['subscription_tier'],
+                  })
+                }
               >
                 <option value="">Abonelik yok</option>
                 <option value="bronze">Bronz</option>
@@ -372,15 +483,29 @@ export default function NewRestaurantPage() {
               <div className="space-y-2 pt-2">
                 <p className="text-sm font-medium">Ödeme Yöntemleri</p>
                 <label className="flex items-center gap-2 text-sm">
-                  <input type="checkbox" checked={form.accepts_cash} onChange={e => setForm({ ...form, accepts_cash: e.target.checked })} />
+                  <input
+                    type="checkbox"
+                    checked={form.accepts_cash}
+                    onChange={(e) => setForm({ ...form, accepts_cash: e.target.checked })}
+                  />
                   Kapıda nakit
                 </label>
                 <label className="flex items-center gap-2 text-sm">
-                  <input type="checkbox" checked={form.accepts_card_on_delivery} onChange={e => setForm({ ...form, accepts_card_on_delivery: e.target.checked })} />
+                  <input
+                    type="checkbox"
+                    checked={form.accepts_card_on_delivery}
+                    onChange={(e) =>
+                      setForm({ ...form, accepts_card_on_delivery: e.target.checked })
+                    }
+                  />
                   Kapıda kredi kartı
                 </label>
                 <label className="flex items-center gap-2 text-sm">
-                  <input type="checkbox" checked={form.accepts_online_payment} onChange={e => setForm({ ...form, accepts_online_payment: e.target.checked })} />
+                  <input
+                    type="checkbox"
+                    checked={form.accepts_online_payment}
+                    onChange={(e) => setForm({ ...form, accepts_online_payment: e.target.checked })}
+                  />
                   Online ödeme (iyzico / Garanti)
                 </label>
               </div>
@@ -389,10 +514,30 @@ export default function NewRestaurantPage() {
 
           {step === 4 ? (
             <>
-              <p className="text-sm text-gray-500">Restoran panelini bu hesap ile kullanacaklar. Şifre paylaşılacaktır.</p>
-              <Input label="Sahip Adı Soyadı" value={form.owner_name} onChange={e => setForm({ ...form, owner_name: e.target.value })} required />
-              <Input label="Sahip E-posta" type="email" value={form.owner_email} onChange={e => setForm({ ...form, owner_email: e.target.value })} required />
-              <Input label="Geçici Şifre" type="text" value={form.owner_password} onChange={e => setForm({ ...form, owner_password: e.target.value })} hint="En az 8 karakter" required />
+              <p className="text-sm text-gray-500">
+                Restoran panelini bu hesap ile kullanacaklar. Şifre paylaşılacaktır.
+              </p>
+              <Input
+                label="Sahip Adı Soyadı"
+                value={form.owner_name}
+                onChange={(e) => setForm({ ...form, owner_name: e.target.value })}
+                required
+              />
+              <Input
+                label="Sahip E-posta"
+                type="email"
+                value={form.owner_email}
+                onChange={(e) => setForm({ ...form, owner_email: e.target.value })}
+                required
+              />
+              <Input
+                label="Geçici Şifre"
+                type="text"
+                value={form.owner_password}
+                onChange={(e) => setForm({ ...form, owner_password: e.target.value })}
+                hint="En az 8 karakter"
+                required
+              />
             </>
           ) : null}
         </CardContent>

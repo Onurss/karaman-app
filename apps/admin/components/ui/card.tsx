@@ -4,17 +4,16 @@ import type { HTMLAttributes } from 'react';
 export function Card({ className, ...rest }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn(
-        'rounded-lg border border-gray-200 bg-white shadow-sm',
-        className,
-      )}
+      className={cn('rounded-lg border border-gray-200 bg-white shadow-sm', className)}
       {...rest}
     />
   );
 }
 
 export function CardHeader({ className, ...rest }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn('flex flex-col gap-1 border-b border-gray-200 p-4', className)} {...rest} />;
+  return (
+    <div className={cn('flex flex-col gap-1 border-b border-gray-200 p-4', className)} {...rest} />
+  );
 }
 
 export function CardTitle({ className, ...rest }: HTMLAttributes<HTMLHeadingElement>) {
@@ -30,5 +29,10 @@ export function CardContent({ className, ...rest }: HTMLAttributes<HTMLDivElemen
 }
 
 export function CardFooter({ className, ...rest }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn('flex items-center gap-2 border-t border-gray-200 p-4', className)} {...rest} />;
+  return (
+    <div
+      className={cn('flex items-center gap-2 border-t border-gray-200 p-4', className)}
+      {...rest}
+    />
+  );
 }

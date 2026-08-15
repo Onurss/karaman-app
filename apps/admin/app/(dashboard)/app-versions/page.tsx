@@ -92,8 +92,19 @@ export default function AppVersionsPage() {
   });
 
   const toggleMutation = useMutation({
-    mutationFn: async ({ id, field, value }: { id: string; field: 'is_force_update' | 'is_maintenance_mode'; value: boolean }) => {
-      const { error } = await supabase.from('app_versions').update({ [field]: value }).eq('id', id);
+    mutationFn: async ({
+      id,
+      field,
+      value,
+    }: {
+      id: string;
+      field: 'is_force_update' | 'is_maintenance_mode';
+      value: boolean;
+    }) => {
+      const { error } = await supabase
+        .from('app_versions')
+        .update({ [field]: value })
+        .eq('id', id);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -119,7 +130,12 @@ export default function AppVersionsPage() {
         title="Uygulama Versiyon Kontrol"
         description="iOS ve Android sürüm yönetimi."
         actions={
-          <Button onClick={() => { setForm(empty); setDialogOpen(true); }}>
+          <Button
+            onClick={() => {
+              setForm(empty);
+              setDialogOpen(true);
+            }}
+          >
             <Plus className="h-4 w-4" /> Yeni Versiyon
           </Button>
         }
@@ -145,7 +161,7 @@ export default function AppVersionsPage() {
                 </TR>
               </THead>
               <TBody>
-                {data.map(v => (
+                {data.map((v) => (
                   <TR key={v.id}>
                     <TD>
                       <Badge tone={v.platform === 'ios' ? 'info' : 'success'}>
@@ -160,7 +176,13 @@ export default function AppVersionsPage() {
                         <input
                           type="checkbox"
                           checked={v.is_force_update}
-                          onChange={e => toggleMutation.mutate({ id: v.id, field: 'is_force_update', value: e.target.checked })}
+                          onChange={(e) =>
+                            toggleMutation.mutate({
+                              id: v.id,
+                              field: 'is_force_update',
+                              value: e.target.checked,
+                            })
+                          }
                         />
                         {v.is_force_update ? 'Zorunlu' : 'İsteğe Bağlı'}
                       </label>
@@ -170,7 +192,13 @@ export default function AppVersionsPage() {
                         <input
                           type="checkbox"
                           checked={v.is_maintenance_mode}
-                          onChange={e => toggleMutation.mutate({ id: v.id, field: 'is_maintenance_mode', value: e.target.checked })}
+                          onChange={(e) =>
+                            toggleMutation.mutate({
+                              id: v.id,
+                              field: 'is_maintenance_mode',
+                              value: e.target.checked,
+                            })
+                          }
                         />
                         {v.is_maintenance_mode ? 'Bakımda' : 'Açık'}
                       </label>
@@ -218,30 +246,66 @@ export default function AppVersionsPage() {
         title={form.id ? 'Versiyon Düzenle' : 'Yeni Versiyon'}
       >
         <form
-          onSubmit={e => { e.preventDefault(); saveMutation.mutate(form); }}
+          onSubmit={(e) => {
+            e.preventDefault();
+            saveMutation.mutate(form);
+          }}
           className="space-y-4"
         >
-          <Select label="Platform" value={form.platform} onChange={e => setForm({ ...form, platform: e.target.value as 'ios' | 'android' })}>
+          <Select
+            label="Platform"
+            value={form.platform}
+            onChange={(e) => setForm({ ...form, platform: e.target.value as 'ios' | 'android' })}
+          >
             <option value="ios">iOS</option>
             <option value="android">Android</option>
           </Select>
           <div className="grid grid-cols-2 gap-3">
-            <Input label="Versiyon" value={form.version} onChange={e => setForm({ ...form, version: e.target.value })} placeholder="1.0.0" required />
-            <Input label="Build No" type="number" value={form.build_number} onChange={e => setForm({ ...form, build_number: Number(e.target.value) })} required />
+            <Input
+              label="Versiyon"
+              value={form.version}
+              onChange={(e) => setForm({ ...form, version: e.target.value })}
+              placeholder="1.0.0"
+              required
+            />
+            <Input
+              label="Build No"
+              type="number"
+              value={form.build_number}
+              onChange={(e) => setForm({ ...form, build_number: Number(e.target.value) })}
+              required
+            />
           </div>
-          <Textarea label="Sürüm Notları" value={form.release_notes} onChange={e => setForm({ ...form, release_notes: e.target.value })} rows={3} />
+          <Textarea
+            label="Sürüm Notları"
+            value={form.release_notes}
+            onChange={(e) => setForm({ ...form, release_notes: e.target.value })}
+            rows={3}
+          />
           <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={form.is_force_update} onChange={e => setForm({ ...form, is_force_update: e.target.checked })} />
+            <input
+              type="checkbox"
+              checked={form.is_force_update}
+              onChange={(e) => setForm({ ...form, is_force_update: e.target.checked })}
+            />
             Zorunlu güncelleme
           </label>
           <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={form.is_maintenance_mode} onChange={e => setForm({ ...form, is_maintenance_mode: e.target.checked })} />
+            <input
+              type="checkbox"
+              checked={form.is_maintenance_mode}
+              onChange={(e) => setForm({ ...form, is_maintenance_mode: e.target.checked })}
+            />
             Bakım modu
           </label>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>Vazgeç</Button>
-            <Button type="submit" isLoading={saveMutation.isPending}>Kaydet</Button>
+            <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
+              Vazgeç
+            </Button>
+            <Button type="submit" isLoading={saveMutation.isPending}>
+              Kaydet
+            </Button>
           </DialogFooter>
         </form>
       </Dialog>

@@ -60,22 +60,26 @@ export default function SettingsPage() {
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card>
-          <CardHeader><CardTitle>Hesap Bilgileri</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle>Hesap Bilgileri</CardTitle>
+          </CardHeader>
           <CardContent className="space-y-3">
             <Input label="E-posta" value={email} disabled />
-            <Input label="Ad Soyad" value={name} onChange={e => setName(e.target.value)} />
+            <Input label="Ad Soyad" value={name} onChange={(e) => setName(e.target.value)} />
             <Button onClick={handleUpdateProfile}>Kaydet</Button>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader><CardTitle>Şifre Değiştir</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle>Şifre Değiştir</CardTitle>
+          </CardHeader>
           <CardContent className="space-y-3">
             <Input
               label="Yeni şifre"
               type="password"
               value={newPassword}
-              onChange={e => setNewPassword(e.target.value)}
+              onChange={(e) => setNewPassword(e.target.value)}
               hint="En az 8 karakter"
             />
             <Button onClick={handleUpdatePassword}>Şifreyi Güncelle</Button>
@@ -83,7 +87,9 @@ export default function SettingsPage() {
         </Card>
 
         <Card className="lg:col-span-2">
-          <CardHeader><CardTitle>Sistem Bilgileri</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle>Sistem Bilgileri</CardTitle>
+          </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>

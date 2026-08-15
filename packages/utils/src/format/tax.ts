@@ -39,7 +39,10 @@ export interface CommissionBreakdown {
   restaurantEarning: number;
 }
 
-export function calculateCommission(orderTotal: number, commissionRate: number): CommissionBreakdown {
+export function calculateCommission(
+  orderTotal: number,
+  commissionRate: number,
+): CommissionBreakdown {
   const commissionAmount = round2(orderTotal * (commissionRate / 100));
   return {
     orderTotal: round2(orderTotal),

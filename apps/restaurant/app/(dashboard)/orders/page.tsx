@@ -31,7 +31,10 @@ const STATUS_LABEL: Record<string, string> = {
   cancelled: 'İptal',
 };
 
-const STATUS_TONE: Record<string, 'warning' | 'info' | 'primary' | 'success' | 'secondary' | 'danger'> = {
+const STATUS_TONE: Record<
+  string,
+  'warning' | 'info' | 'primary' | 'success' | 'secondary' | 'danger'
+> = {
   pending: 'warning',
   confirmed: 'info',
   preparing: 'primary',
@@ -80,7 +83,9 @@ export default function OrdersPage() {
       if (!restaurantId) return [];
       let q = supabase
         .from('orders')
-        .select('*, profiles(full_name, phone), items:order_items(id, item_name_snapshot, quantity, note)')
+        .select(
+          '*, profiles(full_name, phone), items:order_items(id, item_name_snapshot, quantity, note)',
+        )
         .eq('restaurant_id', restaurantId)
         .order('created_at', { ascending: false })
         .limit(PAGINATION.maxLimit);
@@ -109,9 +114,9 @@ export default function OrdersPage() {
 
   useEffect(() => {
     if (!data) return;
-    const currentIds = new Set(data.map(o => o.id));
+    const currentIds = new Set(data.map((o) => o.id));
     const pendingNew = data.filter(
-      o => o.status === 'pending' && !previousIdsRef.current.has(o.id),
+      (o) => o.status === 'pending' && !previousIdsRef.current.has(o.id),
     );
     if (previousIdsRef.current.size > 0 && pendingNew.length > 0) {
       sound.playLoop(3000);
@@ -129,7 +134,12 @@ export default function OrdersPage() {
       .channel('restaurant-orders')
       .on(
         'postgres_changes',
-        { event: '*', schema: 'public', table: 'orders', filter: `restaurant_id=eq.${restaurantId}` },
+        {
+          event: '*',
+          schema: 'public',
+          table: 'orders',
+          filter: `restaurant_id=eq.${restaurantId}`,
+        },
         () => {
           queryClient.invalidateQueries({ queryKey: ['restaurant-orders'] });
         },
@@ -141,7 +151,11 @@ export default function OrdersPage() {
   }, [restaurantId, supabase, queryClient]);
 
   const transition = useMutation({
-    mutationFn: async (input: { orderId: string; status: string; extras?: Record<string, unknown> }) => {
+    mutationFn: async (input: {
+      orderId: string;
+      status: string;
+      extras?: Record<string, unknown>;
+    }) => {
       const { error } = await supabase
         .from('orders')
         .update({ status: input.status, ...(input.extras ?? {}) })
@@ -220,7 +234,7 @@ export default function OrdersPage() {
       <PageHeader title="Siparişler" description={`${data?.length ?? 0} aktif sipariş`} />
 
       <div className="mb-4 flex flex-wrap gap-2">
-        {FILTERS.map(f => (
+        {FILTERS.map((f) => (
           <Button
             key={f}
             size="sm"
@@ -233,12 +247,14 @@ export default function OrdersPage() {
       </div>
 
       {isLoading ? (
-        <Card><CardContent>Yükleniyor…</CardContent></Card>
+        <Card>
+          <CardContent>Yükleniyor…</CardContent>
+        </Card>
       ) : !data || data.length === 0 ? (
         <Empty title="Bu filtreye uygun sipariş yok." />
       ) : (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {data.map(order => (
+          {data.map((order) => (
             <Card key={order.id}>
               <CardContent className="space-y-3">
                 <div className="flex items-center justify-between">
@@ -253,7 +269,9 @@ export default function OrdersPage() {
                 <div className="space-y-1 text-sm">
                   <div className="flex items-center gap-2 text-gray-600">
                     <MapPin className="h-4 w-4" />
-                    <span className="line-clamp-2">{order.delivery_address_snapshot?.full_address ?? '—'}</span>
+                    <span className="line-clamp-2">
+                      {order.delivery_address_snapshot?.full_address ?? '—'}
+                    </span>
                   </div>
                   {order.estimated_delivery_minutes ? (
                     <div className="flex items-center gap-2 text-gray-600">
@@ -269,7 +287,9 @@ export default function OrdersPage() {
                   ) : null}
                 </div>
                 <div className="flex items-center justify-between border-t border-gray-100 pt-3">
-                  <span className="font-semibold">{formatCurrency(Number(order.total_amount))}</span>
+                  <span className="font-semibold">
+                    {formatCurrency(Number(order.total_amount))}
+                  </span>
                   <Button size="sm" variant="outline" onClick={() => setDetailOpen(order)}>
                     Detay
                   </Button>
@@ -303,11 +323,7 @@ export default function OrdersPage() {
                     </Button>
                   ) : null}
                   {order.status === 'ready' ? (
-                    <Button
-                      size="sm"
-                      variant="primary"
-                      onClick={() => setCourierPickerFor(order)}
-                    >
+                    <Button size="sm" variant="primary" onClick={() => setCourierPickerFor(order)}>
                       Kurye Ata
                     </Button>
                   ) : null}
@@ -339,22 +355,28 @@ export default function OrdersPage() {
               <p className="text-gray-500">Müşteri</p>
               <p className="font-medium">{detailOpen.profiles?.full_name ?? '—'}</p>
               {detailOpen.profiles?.phone ? (
-                <a href={`tel:${detailOpen.profiles.phone}`} className="text-blue-600">{detailOpen.profiles.phone}</a>
+                <a href={`tel:${detailOpen.profiles.phone}`} className="text-blue-600">
+                  {detailOpen.profiles.phone}
+                </a>
               ) : null}
             </div>
             <div>
               <p className="text-gray-500">Adres</p>
               <p>{detailOpen.delivery_address_snapshot?.full_address}</p>
               {detailOpen.delivery_address_snapshot?.note ? (
-                <p className="text-gray-500 mt-1">Kurye notu: {detailOpen.delivery_address_snapshot.note}</p>
+                <p className="text-gray-500 mt-1">
+                  Kurye notu: {detailOpen.delivery_address_snapshot.note}
+                </p>
               ) : null}
             </div>
             <div>
               <p className="text-gray-500">Sipariş Kalemleri</p>
               <div className="mt-1 space-y-1">
-                {(detailOpen.items ?? []).map(it => (
+                {(detailOpen.items ?? []).map((it) => (
                   <div key={it.id} className="flex justify-between">
-                    <span>{it.quantity}× {it.item_name_snapshot}</span>
+                    <span>
+                      {it.quantity}× {it.item_name_snapshot}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -371,7 +393,9 @@ export default function OrdersPage() {
             </div>
             <div className="flex justify-between">
               <span>Toplam</span>
-              <span className="text-lg font-semibold">{formatCurrency(Number(detailOpen.total_amount))}</span>
+              <span className="text-lg font-semibold">
+                {formatCurrency(Number(detailOpen.total_amount))}
+              </span>
             </div>
           </div>
         ) : null}
@@ -380,7 +404,7 @@ export default function OrdersPage() {
       <Dialog open={!!acceptFor} onClose={() => setAcceptFor(null)} title="Hazırlık Süresi">
         <p className="mb-3 text-sm text-gray-600">Bu sipariş için tahmini hazırlık süresi:</p>
         <div className="grid grid-cols-4 gap-2">
-          {ORDER_RULES.prepDurationOptions.map(m => (
+          {ORDER_RULES.prepDurationOptions.map((m) => (
             <Button
               key={m}
               variant={prepMinutes === m ? 'primary' : 'outline'}
@@ -391,7 +415,9 @@ export default function OrdersPage() {
           ))}
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => setAcceptFor(null)}>Vazgeç</Button>
+          <Button variant="outline" onClick={() => setAcceptFor(null)}>
+            Vazgeç
+          </Button>
           <Button variant="success" onClick={confirmAccept} isLoading={transition.isPending}>
             Kabul Et
           </Button>
@@ -400,18 +426,27 @@ export default function OrdersPage() {
 
       <Dialog
         open={!!rejectFor}
-        onClose={() => { setRejectFor(null); setRejectReason(''); }}
+        onClose={() => {
+          setRejectFor(null);
+          setRejectReason('');
+        }}
         title="Siparişi Reddet"
       >
         <Textarea
           label="İptal sebebi"
           value={rejectReason}
-          onChange={e => setRejectReason(e.target.value)}
+          onChange={(e) => setRejectReason(e.target.value)}
           rows={3}
           placeholder="Müşteriye bildirilecek iptal sebebi"
         />
         <DialogFooter>
-          <Button variant="outline" onClick={() => { setRejectFor(null); setRejectReason(''); }}>
+          <Button
+            variant="outline"
+            onClick={() => {
+              setRejectFor(null);
+              setRejectReason('');
+            }}
+          >
             Vazgeç
           </Button>
           <Button variant="danger" onClick={confirmReject} isLoading={transition.isPending}>
@@ -423,7 +458,7 @@ export default function OrdersPage() {
       <Dialog open={!!courierPickerFor} onClose={() => setCourierPickerFor(null)} title="Kurye Ata">
         {couriersQuery.data && couriersQuery.data.length > 0 ? (
           <div className="space-y-2">
-            {couriersQuery.data.map(c => (
+            {couriersQuery.data.map((c) => (
               <button
                 key={c.id}
                 onClick={() => assignCourier(c.id)}
@@ -432,7 +467,8 @@ export default function OrdersPage() {
                 <div>
                   <p className="font-medium">{c.name}</p>
                   <p className="text-xs text-gray-500">
-                    {c.phone}{c.plate_number ? ` · ${c.plate_number}` : ''}
+                    {c.phone}
+                    {c.plate_number ? ` · ${c.plate_number}` : ''}
                   </p>
                 </div>
                 <span className="text-xs text-blue-600">Ata →</span>
@@ -441,7 +477,11 @@ export default function OrdersPage() {
           </div>
         ) : (
           <p className="text-sm text-gray-500">
-            Henüz aktif kurye yok. Önce <a href="/couriers" className="text-blue-600 underline">Kuryeler</a> sayfasından kurye ekleyin.
+            Henüz aktif kurye yok. Önce{' '}
+            <a href="/couriers" className="text-blue-600 underline">
+              Kuryeler
+            </a>{' '}
+            sayfasından kurye ekleyin.
           </p>
         )}
       </Dialog>

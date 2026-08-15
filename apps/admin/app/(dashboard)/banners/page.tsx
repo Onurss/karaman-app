@@ -120,7 +120,12 @@ export default function BannersPage() {
         title="Reklam Bannerları"
         description="Uygulamadaki reklam alanlarını yönetin."
         actions={
-          <Button onClick={() => { setForm(empty); setDialogOpen(true); }}>
+          <Button
+            onClick={() => {
+              setForm(empty);
+              setDialogOpen(true);
+            }}
+          >
             <Plus className="h-4 w-4" /> Yeni Banner
           </Button>
         }
@@ -150,10 +155,10 @@ export default function BannersPage() {
                 </TR>
               </THead>
               <TBody>
-                {data.map(b => (
+                {data.map((b) => (
                   <TR key={b.id}>
                     <TD className="font-medium">{b.title ?? '—'}</TD>
-                    <TD>{POSITIONS.find(p => p.value === b.position)?.label ?? b.position}</TD>
+                    <TD>{POSITIONS.find((p) => p.value === b.position)?.label ?? b.position}</TD>
                     <TD>{formatDateTime(b.starts_at)}</TD>
                     <TD>{formatDateTime(b.ends_at)}</TD>
                     <TD className="text-right">{b.view_count}</TD>
@@ -211,7 +216,7 @@ export default function BannersPage() {
         size="lg"
       >
         <form
-          onSubmit={e => {
+          onSubmit={(e) => {
             e.preventDefault();
             saveMutation.mutate(form);
           }}
@@ -220,28 +225,28 @@ export default function BannersPage() {
           <Input
             label="Başlık (opsiyonel)"
             value={form.title}
-            onChange={e => setForm({ ...form, title: e.target.value })}
+            onChange={(e) => setForm({ ...form, title: e.target.value })}
           />
           <Input
             label="Görsel URL"
             value={form.image_url}
-            onChange={e => setForm({ ...form, image_url: e.target.value })}
+            onChange={(e) => setForm({ ...form, image_url: e.target.value })}
             required
             placeholder="https://..."
           />
           <Input
             label="Tıklama URL (opsiyonel)"
             value={form.click_url}
-            onChange={e => setForm({ ...form, click_url: e.target.value })}
+            onChange={(e) => setForm({ ...form, click_url: e.target.value })}
             placeholder="https://karaman.com/..."
           />
           <div className="grid grid-cols-2 gap-3">
             <Select
               label="Pozisyon"
               value={form.position}
-              onChange={e => setForm({ ...form, position: e.target.value })}
+              onChange={(e) => setForm({ ...form, position: e.target.value })}
             >
-              {POSITIONS.map(p => (
+              {POSITIONS.map((p) => (
                 <option key={p.value} value={p.value}>
                   {p.label}
                 </option>
@@ -251,7 +256,7 @@ export default function BannersPage() {
               label="Sıra"
               type="number"
               value={form.display_order}
-              onChange={e => setForm({ ...form, display_order: Number(e.target.value) })}
+              onChange={(e) => setForm({ ...form, display_order: Number(e.target.value) })}
               min={1}
             />
           </div>
@@ -260,14 +265,14 @@ export default function BannersPage() {
               label="Başlangıç"
               type="datetime-local"
               value={form.starts_at}
-              onChange={e => setForm({ ...form, starts_at: e.target.value })}
+              onChange={(e) => setForm({ ...form, starts_at: e.target.value })}
               required
             />
             <Input
               label="Bitiş"
               type="datetime-local"
               value={form.ends_at}
-              onChange={e => setForm({ ...form, ends_at: e.target.value })}
+              onChange={(e) => setForm({ ...form, ends_at: e.target.value })}
               required
             />
           </div>
@@ -275,7 +280,7 @@ export default function BannersPage() {
             <input
               type="checkbox"
               checked={form.is_active}
-              onChange={e => setForm({ ...form, is_active: e.target.checked })}
+              onChange={(e) => setForm({ ...form, is_active: e.target.checked })}
             />
             Aktif
           </label>

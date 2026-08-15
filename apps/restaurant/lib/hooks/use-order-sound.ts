@@ -28,8 +28,12 @@ export function useOrderSound() {
   const ensureContext = () => {
     if (!audioCtxRef.current) {
       const Ctor =
-        (window as unknown as { AudioContext: typeof AudioContext; webkitAudioContext: typeof AudioContext })
-          .AudioContext ??
+        (
+          window as unknown as {
+            AudioContext: typeof AudioContext;
+            webkitAudioContext: typeof AudioContext;
+          }
+        ).AudioContext ??
         (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       audioCtxRef.current = new Ctor();
     }
@@ -76,7 +80,7 @@ export function useOrderSound() {
     if (Notification.permission === 'granted') {
       new Notification(title, { body, icon: '/icons/icon-192.png' });
     } else if (Notification.permission !== 'denied') {
-      void Notification.requestPermission().then(perm => {
+      void Notification.requestPermission().then((perm) => {
         if (perm === 'granted') new Notification(title, { body });
       });
     }

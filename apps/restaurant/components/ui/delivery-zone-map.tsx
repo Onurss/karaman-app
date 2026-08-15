@@ -27,7 +27,7 @@ interface GeoJsonMultiPolygon {
   coordinates: number[][][][];
 }
 
-const LIBRARIES: ('drawing')[] = ['drawing'];
+const LIBRARIES: 'drawing'[] = ['drawing'];
 
 const MAP_CONTAINER_STYLE = {
   width: '100%',
@@ -47,23 +47,21 @@ const POLYGON_OPTIONS = {
 };
 
 function geoJsonToPaths(
-  geojson: GeoJsonPolygon | GeoJsonMultiPolygon | null | undefined
+  geojson: GeoJsonPolygon | GeoJsonMultiPolygon | null | undefined,
 ): google.maps.LatLngLiteral[][] {
   if (!geojson) return [];
   if (geojson.type === 'Polygon') {
-    return geojson.coordinates.map(ring =>
-      ring.map(([lng, lat]) => ({ lat, lng }))
-    );
+    return geojson.coordinates.map((ring) => ring.map(([lng, lat]) => ({ lat, lng })));
   }
-  return geojson.coordinates.flatMap(poly =>
-    poly.map(ring => ring.map(([lng, lat]) => ({ lat, lng })))
+  return geojson.coordinates.flatMap((poly) =>
+    poly.map((ring) => ring.map(([lng, lat]) => ({ lat, lng }))),
   );
 }
 
 function pathsToGeoJson(paths: google.maps.LatLngLiteral[][]): GeoJsonPolygon | null {
   if (!paths.length || !paths[0].length) return null;
-  const rings = paths.map(ring => {
-    const coords = ring.map(p => [p.lng, p.lat]);
+  const rings = paths.map((ring) => {
+    const coords = ring.map((p) => [p.lng, p.lat]);
     const first = coords[0];
     const last = coords[coords.length - 1];
     if (first[0] !== last[0] || first[1] !== last[1]) {
@@ -92,7 +90,7 @@ export function DeliveryZoneMap({
   const mapRef = useRef<google.maps.Map | null>(null);
   const polygonRef = useRef<google.maps.Polygon | null>(null);
   const [paths, setPaths] = useState<google.maps.LatLngLiteral[][]>(() =>
-    geoJsonToPaths(initialGeoJson)
+    geoJsonToPaths(initialGeoJson),
   );
   const [isEditing, setIsEditing] = useState(false);
 
@@ -113,9 +111,9 @@ export function DeliveryZoneMap({
     const polygon = polygonRef.current;
     if (!polygon) return;
     const newPaths: google.maps.LatLngLiteral[][] = [];
-    polygon.getPaths().forEach(path => {
+    polygon.getPaths().forEach((path) => {
       const ring: google.maps.LatLngLiteral[] = [];
-      path.forEach(latLng => {
+      path.forEach((latLng) => {
         ring.push({ lat: latLng.lat(), lng: latLng.lng() });
       });
       newPaths.push(ring);
@@ -127,26 +125,29 @@ export function DeliveryZoneMap({
     (polygon: google.maps.Polygon) => {
       polygonRef.current = polygon;
       const listeners: google.maps.MapsEventListener[] = [];
-      polygon.getPaths().forEach(path => {
+      polygon.getPaths().forEach((path) => {
         listeners.push(path.addListener('set_at', readPathsFromPolygon));
         listeners.push(path.addListener('insert_at', readPathsFromPolygon));
         listeners.push(path.addListener('remove_at', readPathsFromPolygon));
       });
-      (polygon as unknown as { _listeners?: google.maps.MapsEventListener[] })._listeners = listeners;
+      (polygon as unknown as { _listeners?: google.maps.MapsEventListener[] })._listeners =
+        listeners;
     },
-    [readPathsFromPolygon]
+    [readPathsFromPolygon],
   );
 
   const onPolygonUnmount = useCallback(() => {
-    const polygon = polygonRef.current as unknown as { _listeners?: google.maps.MapsEventListener[] } | null;
-    polygon?._listeners?.forEach(l => l.remove());
+    const polygon = polygonRef.current as unknown as {
+      _listeners?: google.maps.MapsEventListener[];
+    } | null;
+    polygon?._listeners?.forEach((l) => l.remove());
     polygonRef.current = null;
   }, []);
 
   const onPolygonComplete = useCallback((polygon: google.maps.Polygon) => {
     const path = polygon.getPath();
     const ring: google.maps.LatLngLiteral[] = [];
-    path.forEach(latLng => {
+    path.forEach((latLng) => {
       ring.push({ lat: latLng.lat(), lng: latLng.lng() });
     });
     setPaths([ring]);
@@ -175,7 +176,11 @@ export function DeliveryZoneMap({
   };
 
   const handleClear = () => {
-    if (!confirm('Teslimat bölgesini silmek istediğinize emin misiniz? Tüm adreslere teslimat yapılacak.')) {
+    if (
+      !confirm(
+        'Teslimat bölgesini silmek istediğinize emin misiniz? Tüm adreslere teslimat yapılacak.',
+      )
+    ) {
       return;
     }
     setPaths([]);
@@ -274,11 +279,7 @@ export function DeliveryZoneMap({
 
         {hasPolygon ? (
           <>
-            <Button
-              onClick={handleSave}
-              size="sm"
-              isLoading={saveMutation.isPending}
-            >
+            <Button onClick={handleSave} size="sm" isLoading={saveMutation.isPending}>
               <MapPin className="h-4 w-4" /> Bölgeyi Kaydet
             </Button>
             <Button
@@ -302,8 +303,8 @@ export function DeliveryZoneMap({
       </div>
 
       <p className="text-xs text-gray-500">
-        Tanımlı bölge yoksa varsayılan olarak tüm Karaman&apos;a teslimat yapılır. Çizilen
-        poligonun dışında kalan adresler sipariş veremez.
+        Tanımlı bölge yoksa varsayılan olarak tüm Karaman&apos;a teslimat yapılır. Çizilen poligonun
+        dışında kalan adresler sipariş veremez.
       </p>
     </div>
   );

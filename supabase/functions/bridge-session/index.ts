@@ -99,7 +99,7 @@ async function ensureAuthUser(
   return { userId, email };
 }
 
-serve(async req => {
+serve(async (req) => {
   const cors = handleCors(req);
   if (cors) return cors;
 

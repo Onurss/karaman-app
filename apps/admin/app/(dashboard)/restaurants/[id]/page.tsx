@@ -139,9 +139,7 @@ export default function RestaurantDetailPage() {
             <Badge tone={r.is_active ? 'success' : 'danger'}>
               {r.is_active ? 'Aktif' : 'Pasif'}
             </Badge>
-            <Badge tone={r.is_open ? 'success' : 'warning'}>
-              {r.is_open ? 'Açık' : 'Kapalı'}
-            </Badge>
+            <Badge tone={r.is_open ? 'success' : 'warning'}>{r.is_open ? 'Açık' : 'Kapalı'}</Badge>
           </div>
         }
       />
@@ -170,9 +168,7 @@ export default function RestaurantDetailPage() {
                 </a>
               </div>
             ) : null}
-            {r.description ? (
-              <p className="text-sm text-gray-600">{r.description}</p>
-            ) : null}
+            {r.description ? <p className="text-sm text-gray-600">{r.description}</p> : null}
           </CardContent>
         </Card>
 
@@ -269,7 +265,7 @@ export default function RestaurantDetailPage() {
                   </TR>
                 </THead>
                 <TBody>
-                  {ownersQuery.data.map(u => {
+                  {ownersQuery.data.map((u) => {
                     const raw = u.profiles as unknown;
                     const profile = (Array.isArray(raw) ? raw[0] : raw) as
                       | { full_name: string; email: string; phone: string | null }
@@ -281,9 +277,7 @@ export default function RestaurantDetailPage() {
                         <TD>{profile?.email ?? '—'}</TD>
                         <TD>{profile?.phone ? formatPhone(profile.phone) : '—'}</TD>
                         <TD>
-                          <Badge tone={u.role === 'owner' ? 'primary' : 'neutral'}>
-                            {u.role}
-                          </Badge>
+                          <Badge tone={u.role === 'owner' ? 'primary' : 'neutral'}>{u.role}</Badge>
                         </TD>
                         <TD>
                           <Badge tone={u.is_active ? 'success' : 'neutral'}>
@@ -318,7 +312,7 @@ export default function RestaurantDetailPage() {
                   </TR>
                 </THead>
                 <TBody>
-                  {ordersQuery.data.map(o => (
+                  {ordersQuery.data.map((o) => (
                     <TR key={o.id}>
                       <TD className="font-mono text-xs">{o.order_number}</TD>
                       <TD>{formatDate(o.created_at)}</TD>
@@ -326,9 +320,7 @@ export default function RestaurantDetailPage() {
                         <Badge tone="info">{o.status}</Badge>
                       </TD>
                       <TD className="text-xs text-gray-500">{o.payment_method}</TD>
-                      <TD className="text-right font-medium">
-                        {formatCurrency(o.total_amount)}
-                      </TD>
+                      <TD className="text-right font-medium">{formatCurrency(o.total_amount)}</TD>
                     </TR>
                   ))}
                 </TBody>

@@ -46,11 +46,7 @@ export function Dialog({ open, onClose, title, description, children, size = 'md
       role="dialog"
       aria-modal="true"
     >
-      <div
-        className="absolute inset-0 bg-black/50"
-        onClick={onClose}
-        aria-hidden="true"
-      />
+      <div className="absolute inset-0 bg-black/50" onClick={onClose} aria-hidden="true" />
       <div
         className={cn(
           'relative z-10 max-h-[90vh] w-full overflow-y-auto rounded-lg bg-white p-6 shadow-xl',

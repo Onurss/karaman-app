@@ -30,7 +30,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         )}
         {...rest}
       />
-      {error ? <p className="text-xs text-danger">{error}</p> : hint ? <p className="text-xs text-gray-500">{hint}</p> : null}
+      {error ? (
+        <p className="text-xs text-danger">{error}</p>
+      ) : hint ? (
+        <p className="text-xs text-gray-500">{hint}</p>
+      ) : null}
     </div>
   );
 });
@@ -62,7 +66,11 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
         )}
         {...rest}
       />
-      {error ? <p className="text-xs text-danger">{error}</p> : hint ? <p className="text-xs text-gray-500">{hint}</p> : null}
+      {error ? (
+        <p className="text-xs text-danger">{error}</p>
+      ) : hint ? (
+        <p className="text-xs text-gray-500">{hint}</p>
+      ) : null}
     </div>
   );
 });

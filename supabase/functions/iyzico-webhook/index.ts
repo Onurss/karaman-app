@@ -14,11 +14,7 @@ async function hmacSha256Base64(key: string, payload: string): Promise<string> {
     false,
     ['sign'],
   );
-  const signature = await crypto.subtle.sign(
-    'HMAC',
-    cryptoKey,
-    new TextEncoder().encode(payload),
-  );
+  const signature = await crypto.subtle.sign('HMAC', cryptoKey, new TextEncoder().encode(payload));
   return btoa(String.fromCharCode(...new Uint8Array(signature)));
 }
 
@@ -50,7 +46,7 @@ async function verifyIyzicoPayment(conversationId: string, paymentId: string) {
   };
 }
 
-serve(async req => {
+serve(async (req) => {
   const cors = handleCors(req);
   if (cors) return cors;
 
@@ -74,8 +70,7 @@ serve(async req => {
   if (mdStatus === '1') {
     try {
       verifyResult = await verifyIyzicoPayment(conversationId, paymentId);
-      success =
-        verifyResult.status === 'success' && verifyResult.paymentStatus === 'SUCCESS';
+      success = verifyResult.status === 'success' && verifyResult.paymentStatus === 'SUCCESS';
     } catch (e) {
       console.error('[iyzico-webhook] verify error', (e as Error).message);
     }
@@ -102,7 +97,7 @@ serve(async req => {
     .update({
       status: success ? 'confirmed' : 'cancelled',
       payment_status: success ? 'paid' : 'failed',
-      cancellation_reason: success ? null : verifyResult?.errorMessage ?? 'Ödeme başarısız',
+      cancellation_reason: success ? null : (verifyResult?.errorMessage ?? 'Ödeme başarısız'),
     })
     .eq('id', order.id);
 
@@ -123,13 +118,13 @@ async function notifyOrderConfirmed(
     .eq('restaurant_id', order.restaurant_id)
     .eq('is_active', true);
 
-  const ownerIds = (owners ?? []).map(o => o.user_id);
+  const ownerIds = (owners ?? []).map((o) => o.user_id);
   if (ownerIds.length > 0) {
     const { data: ownerProfiles } = await service
       .from('profiles')
       .select('push_token')
       .in('id', ownerIds);
-    const tokens = (ownerProfiles ?? []).map(p => p.push_token).filter(Boolean) as string[];
+    const tokens = (ownerProfiles ?? []).map((p) => p.push_token).filter(Boolean) as string[];
     await sendPushBatch(tokens, {
       title: 'Yeni sipariş',
       body: `Sipariş ${order.order_number} onaylandı.`,
@@ -160,7 +155,7 @@ async function sendPushBatch(
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify(
-      tokens.map(to => ({
+      tokens.map((to) => ({
         to,
         title: payload.title,
         body: payload.body,

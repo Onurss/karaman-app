@@ -85,7 +85,7 @@ export default function TransportPage() {
   });
 
   const filtered = useMemo(
-    () => (data ?? []).filter(t => (typeFilter === 'all' ? true : t.type === typeFilter)),
+    () => (data ?? []).filter((t) => (typeFilter === 'all' ? true : t.type === typeFilter)),
     [data, typeFilter],
   );
 
@@ -135,10 +135,10 @@ export default function TransportPage() {
   });
 
   const toggleDay = (day: number) => {
-    setForm(f => ({
+    setForm((f) => ({
       ...f,
       days_of_week: f.days_of_week.includes(day)
-        ? f.days_of_week.filter(d => d !== day)
+        ? f.days_of_week.filter((d) => d !== day)
         : [...f.days_of_week, day].sort(),
     }));
   };
@@ -149,7 +149,12 @@ export default function TransportPage() {
         title="Otobüs & Tren Saatleri"
         description="Karaman'a giden seferleri yönetin."
         actions={
-          <Button onClick={() => { setForm(empty); setDialogOpen(true); }}>
+          <Button
+            onClick={() => {
+              setForm(empty);
+              setDialogOpen(true);
+            }}
+          >
             <Plus className="h-4 w-4" /> Yeni Sefer
           </Button>
         }
@@ -158,7 +163,7 @@ export default function TransportPage() {
       <Card className="mb-4">
         <CardContent>
           <div className="flex gap-2">
-            {(['all', 'bus', 'train'] as const).map(t => (
+            {(['all', 'bus', 'train'] as const).map((t) => (
               <Button
                 key={t}
                 size="sm"
@@ -194,7 +199,7 @@ export default function TransportPage() {
                 </TR>
               </THead>
               <TBody>
-                {filtered.map(t => (
+                {filtered.map((t) => (
                   <TR key={t.id}>
                     <TD>
                       <Badge tone={t.type === 'bus' ? 'info' : 'secondary'}>
@@ -208,7 +213,7 @@ export default function TransportPage() {
                     <TD className="text-right">{t.price ? `${t.price} ₺` : '—'}</TD>
                     <TD className="text-xs text-gray-500">
                       {(t.days_of_week as number[])
-                        .map(d => DAYS.find(x => x.v === d)?.l)
+                        .map((d) => DAYS.find((x) => x.v === d)?.l)
                         .join(' ')}
                     </TD>
                     <TD>
@@ -267,7 +272,7 @@ export default function TransportPage() {
         size="lg"
       >
         <form
-          onSubmit={e => {
+          onSubmit={(e) => {
             e.preventDefault();
             saveMutation.mutate(form);
           }}
@@ -277,7 +282,7 @@ export default function TransportPage() {
             <Select
               label="Tip"
               value={form.type}
-              onChange={e => setForm({ ...form, type: e.target.value as 'bus' | 'train' })}
+              onChange={(e) => setForm({ ...form, type: e.target.value as 'bus' | 'train' })}
             >
               <option value="bus">Otobüs</option>
               <option value="train">Tren</option>
@@ -285,7 +290,7 @@ export default function TransportPage() {
             <Input
               label="Hat adı"
               value={form.route_name}
-              onChange={e => setForm({ ...form, route_name: e.target.value })}
+              onChange={(e) => setForm({ ...form, route_name: e.target.value })}
               required
               placeholder="Örn. İstanbul - Karaman"
             />
@@ -294,13 +299,13 @@ export default function TransportPage() {
             <Input
               label="Nereden"
               value={form.from_location}
-              onChange={e => setForm({ ...form, from_location: e.target.value })}
+              onChange={(e) => setForm({ ...form, from_location: e.target.value })}
               required
             />
             <Input
               label="Nereye"
               value={form.to_location}
-              onChange={e => setForm({ ...form, to_location: e.target.value })}
+              onChange={(e) => setForm({ ...form, to_location: e.target.value })}
               required
             />
           </div>
@@ -309,35 +314,35 @@ export default function TransportPage() {
               label="Kalkış saati"
               type="time"
               value={form.departure_time}
-              onChange={e => setForm({ ...form, departure_time: e.target.value })}
+              onChange={(e) => setForm({ ...form, departure_time: e.target.value })}
               required
             />
             <Input
               label="Varış saati"
               type="time"
               value={form.arrival_time}
-              onChange={e => setForm({ ...form, arrival_time: e.target.value })}
+              onChange={(e) => setForm({ ...form, arrival_time: e.target.value })}
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <Input
               label="Operatör"
               value={form.operator}
-              onChange={e => setForm({ ...form, operator: e.target.value })}
+              onChange={(e) => setForm({ ...form, operator: e.target.value })}
               placeholder="Örn. Metro Turizm"
             />
             <Input
               label="Fiyat (₺)"
               type="number"
               value={form.price}
-              onChange={e => setForm({ ...form, price: e.target.value })}
+              onChange={(e) => setForm({ ...form, price: e.target.value })}
             />
           </div>
 
           <div>
             <p className="mb-1.5 text-sm font-medium text-gray-700">Hizmet Günleri</p>
             <div className="flex flex-wrap gap-2">
-              {DAYS.map(d => (
+              {DAYS.map((d) => (
                 <button
                   key={d.v}
                   type="button"
@@ -357,7 +362,7 @@ export default function TransportPage() {
           <Textarea
             label="Notlar"
             value={form.notes}
-            onChange={e => setForm({ ...form, notes: e.target.value })}
+            onChange={(e) => setForm({ ...form, notes: e.target.value })}
             rows={2}
           />
 
@@ -365,7 +370,7 @@ export default function TransportPage() {
             <input
               type="checkbox"
               checked={form.is_active}
-              onChange={e => setForm({ ...form, is_active: e.target.checked })}
+              onChange={(e) => setForm({ ...form, is_active: e.target.checked })}
             />
             Aktif
           </label>

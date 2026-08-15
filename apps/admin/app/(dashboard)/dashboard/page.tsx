@@ -40,7 +40,10 @@ const orderStatusLabel: Record<string, string> = {
   cancelled: 'İptal',
 };
 
-const statusTone: Record<string, 'warning' | 'info' | 'primary' | 'success' | 'danger' | 'secondary'> = {
+const statusTone: Record<
+  string,
+  'warning' | 'info' | 'primary' | 'success' | 'danger' | 'secondary'
+> = {
   pending: 'warning',
   confirmed: 'info',
   preparing: 'primary',
@@ -117,7 +120,7 @@ export default function DashboardPage() {
         const label = d.toLocaleDateString('tr-TR', { day: '2-digit', month: 'short' });
         buckets[key] = { date: label, orders: 0, revenue: 0 };
       }
-      (data ?? []).forEach(o => {
+      (data ?? []).forEach((o) => {
         const key = localDateKey(o.created_at);
         if (buckets[key]) {
           buckets[key].orders += 1;
@@ -172,7 +175,7 @@ export default function DashboardPage() {
       <PageHeader title="Dashboard" description="Karaman.com genel bakış" />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {kpis.map(k => {
+        {kpis.map((k) => {
           const Icon = k.icon;
           return (
             <Card key={k.label} className="flex items-center gap-4 p-4">
@@ -228,7 +231,7 @@ export default function DashboardPage() {
                 </TR>
               </THead>
               <TBody>
-                {recentOrdersQuery.data.map(o => (
+                {recentOrdersQuery.data.map((o) => (
                   <TR key={o.id}>
                     <TD className="font-medium">{o.order_number}</TD>
                     <TD>{formatDateTime(o.created_at)}</TD>

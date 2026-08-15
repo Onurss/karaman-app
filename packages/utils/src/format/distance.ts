@@ -17,15 +17,10 @@ export function haversineDistance(a: GeoPoint, b: GeoPoint): number {
   const sinDLng = Math.sin(dLng / 2);
 
   const aa =
-    sinDLat * sinDLat +
-    Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * sinDLng * sinDLng;
+    sinDLat * sinDLat + Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * sinDLng * sinDLng;
   return R * 2 * Math.atan2(Math.sqrt(aa), Math.sqrt(1 - aa));
 }
 
-export function withinRadius(
-  user: GeoPoint,
-  target: GeoPoint,
-  radiusKm: number,
-): boolean {
+export function withinRadius(user: GeoPoint, target: GeoPoint, radiusKm: number): boolean {
   return haversineDistance(user, target) <= radiusKm * 1000;
 }

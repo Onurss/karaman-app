@@ -61,7 +61,10 @@ export default function RestaurantsPage() {
 
   const toggleMutation = useMutation({
     mutationFn: async ({ id, value }: { id: string; value: boolean }) => {
-      const { error } = await supabase.from('restaurants').update({ is_active: value }).eq('id', id);
+      const { error } = await supabase
+        .from('restaurants')
+        .update({ is_active: value })
+        .eq('id', id);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -108,11 +111,11 @@ export default function RestaurantsPage() {
             <Input
               placeholder="Restoran adı ara…"
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={(e) => setSearch(e.target.value)}
             />
             <Select
               value={activeFilter}
-              onChange={e => setActiveFilter(e.target.value as 'all' | 'active' | 'inactive')}
+              onChange={(e) => setActiveFilter(e.target.value as 'all' | 'active' | 'inactive')}
             >
               <option value="all">Tüm restoranlar</option>
               <option value="active">Aktif</option>
@@ -144,18 +147,34 @@ export default function RestaurantsPage() {
                 </TR>
               </THead>
               <TBody>
-                {data.map(r => (
+                {data.map((r) => (
                   <TR key={r.id}>
                     <TD className="font-medium">{r.name}</TD>
                     <TD className="text-gray-600">{r.phone}</TD>
                     <TD>{r.district}</TD>
-                    <TD className="text-xs text-gray-500">{(r.cuisine_types as string[]).join(', ')}</TD>
+                    <TD className="text-xs text-gray-500">
+                      {(r.cuisine_types as string[]).join(', ')}
+                    </TD>
                     <TD>
                       {r.subscription_tier ? (
-                        <Badge tone={r.subscription_tier === 'gold' ? 'warning' : r.subscription_tier === 'silver' ? 'info' : 'neutral'}>
-                          {r.subscription_tier === 'gold' ? 'Altın' : r.subscription_tier === 'silver' ? 'Gümüş' : 'Bronz'}
+                        <Badge
+                          tone={
+                            r.subscription_tier === 'gold'
+                              ? 'warning'
+                              : r.subscription_tier === 'silver'
+                                ? 'info'
+                                : 'neutral'
+                          }
+                        >
+                          {r.subscription_tier === 'gold'
+                            ? 'Altın'
+                            : r.subscription_tier === 'silver'
+                              ? 'Gümüş'
+                              : 'Bronz'}
                         </Badge>
-                      ) : <span className="text-gray-400">—</span>}
+                      ) : (
+                        <span className="text-gray-400">—</span>
+                      )}
                     </TD>
                     <TD className="text-right">{formatCurrency(r.min_order_amount)}</TD>
                     <TD className="text-right">%{r.commission_rate}</TD>
@@ -177,7 +196,9 @@ export default function RestaurantsPage() {
                           onClick={() => toggleMutation.mutate({ id: r.id, value: !r.is_active })}
                           title={r.is_active ? 'Pasifleştir' : 'Aktifleştir'}
                         >
-                          <Power className={`h-4 w-4 ${r.is_active ? 'text-red-500' : 'text-green-500'}`} />
+                          <Power
+                            className={`h-4 w-4 ${r.is_active ? 'text-red-500' : 'text-green-500'}`}
+                          />
                         </Button>
                         <Button
                           size="sm"
@@ -205,9 +226,7 @@ export default function RestaurantsPage() {
         }}
         title="Restoranı sil"
         description={
-          deleteTarget
-            ? `"${deleteTarget.name}" silinecek. Bu işlem geri alınamaz.`
-            : undefined
+          deleteTarget ? `"${deleteTarget.name}" silinecek. Bu işlem geri alınamaz.` : undefined
         }
       >
         <div className="space-y-3">
@@ -218,8 +237,8 @@ export default function RestaurantsPage() {
               <li>Restoran kullanıcı yetkileri kaldırılır.</li>
               <li>Geçmiş siparişler korunur (finansal kayıt için).</li>
               <li>
-                Aktif siparişler varsa silinmez — &quot;Aktif siparişleri iptal
-                ederek devam et&quot; seçeneğini işaretleyin.
+                Aktif siparişler varsa silinmez — &quot;Aktif siparişleri iptal ederek devam
+                et&quot; seçeneğini işaretleyin.
               </li>
             </ul>
           </div>
@@ -227,7 +246,7 @@ export default function RestaurantsPage() {
             <input
               type="checkbox"
               checked={forceDelete}
-              onChange={e => setForceDelete(e.target.checked)}
+              onChange={(e) => setForceDelete(e.target.checked)}
               className="mt-0.5"
             />
             <span>Aktif siparişleri iptal ederek devam et</span>
@@ -247,8 +266,7 @@ export default function RestaurantsPage() {
             variant="danger"
             isLoading={deleteMutation.isPending}
             onClick={() =>
-              deleteTarget &&
-              deleteMutation.mutate({ id: deleteTarget.id, force: forceDelete })
+              deleteTarget && deleteMutation.mutate({ id: deleteTarget.id, force: forceDelete })
             }
           >
             <Trash2 className="h-4 w-4" /> Kalıcı Olarak Sil

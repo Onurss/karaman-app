@@ -86,26 +86,39 @@ export default function CommissionsPage() {
 
   return (
     <div>
-      <PageHeader title="Komisyon & Abonelik" description="Restoran komisyon raporu ve ödeme takibi." />
+      <PageHeader
+        title="Komisyon & Abonelik"
+        description="Restoran komisyon raporu ve ödeme takibi."
+      />
 
       <div className="mb-4 grid grid-cols-3 gap-4">
         <Card>
-          <CardHeader><CardTitle className="text-sm text-gray-500">Toplam Komisyon</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle className="text-sm text-gray-500">Toplam Komisyon</CardTitle>
+          </CardHeader>
           <CardContent>
             <p className="text-2xl font-semibold">{formatCurrency(totals.sum)}</p>
             <p className="text-xs text-gray-500">{totals.count} kayıt</p>
           </CardContent>
         </Card>
         <Card>
-          <CardHeader><CardTitle className="text-sm text-gray-500">Ödenmemiş</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle className="text-sm text-gray-500">Ödenmemiş</CardTitle>
+          </CardHeader>
           <CardContent>
-            <p className="text-2xl font-semibold text-amber-600">{formatCurrency(totals.pendingSum)}</p>
+            <p className="text-2xl font-semibold text-amber-600">
+              {formatCurrency(totals.pendingSum)}
+            </p>
           </CardContent>
         </Card>
         <Card>
-          <CardHeader><CardTitle className="text-sm text-gray-500">Ödenmiş</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle className="text-sm text-gray-500">Ödenmiş</CardTitle>
+          </CardHeader>
           <CardContent>
-            <p className="text-2xl font-semibold text-green-600">{formatCurrency(totals.paidSum)}</p>
+            <p className="text-2xl font-semibold text-green-600">
+              {formatCurrency(totals.paidSum)}
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -113,13 +126,23 @@ export default function CommissionsPage() {
       <Card className="mb-4">
         <CardContent>
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-            <Select label="Restoran" value={restaurantId} onChange={e => setRestaurantId(e.target.value)}>
+            <Select
+              label="Restoran"
+              value={restaurantId}
+              onChange={(e) => setRestaurantId(e.target.value)}
+            >
               <option value="">Tüm restoranlar</option>
-              {(restaurantsQuery.data ?? []).map(r => (
-                <option key={r.id} value={r.id}>{r.name}</option>
+              {(restaurantsQuery.data ?? []).map((r) => (
+                <option key={r.id} value={r.id}>
+                  {r.name}
+                </option>
               ))}
             </Select>
-            <Select label="Durum" value={status} onChange={e => setStatus(e.target.value as 'pending' | 'paid' | '')}>
+            <Select
+              label="Durum"
+              value={status}
+              onChange={(e) => setStatus(e.target.value as 'pending' | 'paid' | '')}
+            >
               <option value="">Tümü</option>
               <option value="pending">Bekleyen</option>
               <option value="paid">Ödenen</option>
@@ -149,23 +172,31 @@ export default function CommissionsPage() {
                 </TR>
               </THead>
               <TBody>
-                {data.map(c => (
+                {data.map((c) => (
                   <TR key={c.id}>
-                    <TD className="font-medium">
-
-                      {c.restaurants?.name ?? '—'}
-                    </TD>
-                    <TD className="font-mono text-xs">
-
-                      {c.orders?.order_number ?? '—'}
-                    </TD>
+                    <TD className="font-medium">{c.restaurants?.name ?? '—'}</TD>
+                    <TD className="font-mono text-xs">{c.orders?.order_number ?? '—'}</TD>
                     <TD className="text-gray-500">{formatDate(c.created_at)}</TD>
                     <TD className="text-right">{formatCurrency(c.order_total)}</TD>
                     <TD className="text-right">%{c.commission_rate}</TD>
-                    <TD className="text-right font-medium">{formatCurrency(c.commission_amount)}</TD>
+                    <TD className="text-right font-medium">
+                      {formatCurrency(c.commission_amount)}
+                    </TD>
                     <TD>
-                      <Badge tone={c.status === 'paid' ? 'success' : c.status === 'cancelled' ? 'neutral' : 'warning'}>
-                        {c.status === 'paid' ? 'Ödendi' : c.status === 'cancelled' ? 'İptal' : 'Beklemede'}
+                      <Badge
+                        tone={
+                          c.status === 'paid'
+                            ? 'success'
+                            : c.status === 'cancelled'
+                              ? 'neutral'
+                              : 'warning'
+                        }
+                      >
+                        {c.status === 'paid'
+                          ? 'Ödendi'
+                          : c.status === 'cancelled'
+                            ? 'İptal'
+                            : 'Beklemede'}
                       </Badge>
                     </TD>
                     <TD>

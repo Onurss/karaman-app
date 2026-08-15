@@ -48,13 +48,11 @@ export function ImageUpload({
       const fileName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
       const fullPath = `${pathPrefix.replace(/\/$/, '')}/${fileName}`;
 
-      const { error } = await supabase.storage
-        .from(bucket)
-        .upload(fullPath, file, {
-          cacheControl: '3600',
-          upsert: false,
-          contentType: file.type,
-        });
+      const { error } = await supabase.storage.from(bucket).upload(fullPath, file, {
+        cacheControl: '3600',
+        upsert: false,
+        contentType: file.type,
+      });
       if (error) throw error;
 
       const { data: pub } = supabase.storage.from(bucket).getPublicUrl(fullPath);
@@ -123,7 +121,11 @@ export function ImageUpload({
           disabled={uploading}
           className="inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50"
         >
-          {uploading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Upload className="h-3 w-3" />}
+          {uploading ? (
+            <Loader2 className="h-3 w-3 animate-spin" />
+          ) : (
+            <Upload className="h-3 w-3" />
+          )}
           Değiştir
         </button>
       ) : null}

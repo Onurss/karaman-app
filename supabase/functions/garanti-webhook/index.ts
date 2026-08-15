@@ -3,7 +3,7 @@ import { handleCors, errorResponse } from '../_shared/cors.ts';
 import { getServiceClient } from '../_shared/supabase.ts';
 import { verifyGarantiCallback } from '../_shared/payments.ts';
 
-serve(async req => {
+serve(async (req) => {
   const cors = handleCors(req);
   if (cors) return cors;
 
@@ -31,11 +31,7 @@ serve(async req => {
 
   const service = getServiceClient();
 
-  const { data: order } = await service
-    .from('orders')
-    .select('*')
-    .eq('id', orderId)
-    .single();
+  const { data: order } = await service.from('orders').select('*').eq('id', orderId).single();
   if (!order) return errorResponse(404, 'NOT_FOUND', 'Sipariş bulunamadı.');
 
   const success = form.Response === 'Approved' && form.ProcReturnCode === '00';
@@ -54,7 +50,7 @@ serve(async req => {
     .update({
       status: success ? 'confirmed' : 'cancelled',
       payment_status: success ? 'paid' : 'failed',
-      cancellation_reason: success ? null : form.ErrMsg ?? 'Ödeme başarısız',
+      cancellation_reason: success ? null : (form.ErrMsg ?? 'Ödeme başarısız'),
     })
     .eq('id', order.id);
 
@@ -91,13 +87,13 @@ async function notifyOrderConfirmed(
     .eq('restaurant_id', order.restaurant_id)
     .eq('is_active', true);
 
-  const ownerIds = (owners ?? []).map(o => o.user_id);
+  const ownerIds = (owners ?? []).map((o) => o.user_id);
   if (ownerIds.length > 0) {
     const { data: ownerProfiles } = await service
       .from('profiles')
       .select('push_token')
       .in('id', ownerIds);
-    const tokens = (ownerProfiles ?? []).map(p => p.push_token).filter(Boolean) as string[];
+    const tokens = (ownerProfiles ?? []).map((p) => p.push_token).filter(Boolean) as string[];
     await sendPushBatch(tokens, {
       title: 'Yeni sipariş',
       body: `Sipariş ${order.order_number} onaylandı, hazırlığa başlayabilirsiniz.`,
@@ -128,7 +124,7 @@ async function sendPushBatch(
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify(
-      tokens.map(to => ({
+      tokens.map((to) => ({
         to,
         title: payload.title,
         body: payload.body,

@@ -24,7 +24,7 @@ export const WEEKDAYS: { key: DayKey; label: string }[] = [
 ];
 
 export function defaultWorkingHours(open = '09:00', close = '22:00'): WorkingHours {
-  return Object.fromEntries(WEEKDAYS.map(d => [d.key, { open, close }])) as WorkingHours;
+  return Object.fromEntries(WEEKDAYS.map((d) => [d.key, { open, close }])) as WorkingHours;
 }
 
 function hhmmToMinutes(value: string | undefined): number | null {
@@ -45,7 +45,7 @@ function istanbulNowParts(at: Date): { dayKey: DayKey; minutes: number } {
     minute: '2-digit',
     hour12: false,
   }).formatToParts(at);
-  const get = (type: string) => parts.find(p => p.type === type)?.value ?? '';
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? '';
   const dayKey = get('weekday').toLowerCase() as DayKey;
   const hour = Number(get('hour')) % 24;
   const minute = Number(get('minute'));

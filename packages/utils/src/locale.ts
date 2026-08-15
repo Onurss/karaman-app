@@ -23,7 +23,7 @@ export function turkishSearchMatch(haystack: string, needle: string): boolean {
 }
 
 export function turkishToLatin(text: string): string {
-  return text.replace(/[çÇğĞıİöÖşŞüÜ]/g, char => TR_LATIN_MAP[char] ?? char);
+  return text.replace(/[çÇğĞıİöÖşŞüÜ]/g, (char) => TR_LATIN_MAP[char] ?? char);
 }
 
 export function slugify(text: string): string {

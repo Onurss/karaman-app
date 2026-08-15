@@ -86,7 +86,10 @@ export default function CouriersPage() {
 
   const toggleActive = useMutation({
     mutationFn: async ({ id, value }: { id: string; value: boolean }) => {
-      const { error } = await supabase.from('restaurant_couriers').update({ is_active: value }).eq('id', id);
+      const { error } = await supabase
+        .from('restaurant_couriers')
+        .update({ is_active: value })
+        .eq('id', id);
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['couriers'] }),
@@ -109,7 +112,12 @@ export default function CouriersPage() {
         title="Kuryeler"
         description="Restoranınızın kurye listesi."
         actions={
-          <Button onClick={() => { setForm(empty); setDialogOpen(true); }}>
+          <Button
+            onClick={() => {
+              setForm(empty);
+              setDialogOpen(true);
+            }}
+          >
             <Plus className="h-4 w-4" /> Yeni Kurye
           </Button>
         }
@@ -133,10 +141,14 @@ export default function CouriersPage() {
                 </TR>
               </THead>
               <TBody>
-                {data.map(c => (
+                {data.map((c) => (
                   <TR key={c.id}>
                     <TD className="font-medium">{c.name}</TD>
-                    <TD><a href={`tel:${c.phone}`} className="text-blue-600">{c.phone}</a></TD>
+                    <TD>
+                      <a href={`tel:${c.phone}`} className="text-blue-600">
+                        {c.phone}
+                      </a>
+                    </TD>
                     <TD className="font-mono">{c.plate_number ?? '—'}</TD>
                     <TD>
                       <Badge tone={c.is_active ? 'success' : 'neutral'}>
@@ -145,16 +157,36 @@ export default function CouriersPage() {
                     </TD>
                     <TD>
                       <div className="flex gap-1">
-                        <Button size="sm" variant="ghost" onClick={() => toggleActive.mutate({ id: c.id, value: !c.is_active })}>
-                          <Power className={`h-4 w-4 ${c.is_active ? 'text-red-500' : 'text-green-500'}`} />
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => toggleActive.mutate({ id: c.id, value: !c.is_active })}
+                        >
+                          <Power
+                            className={`h-4 w-4 ${c.is_active ? 'text-red-500' : 'text-green-500'}`}
+                          />
                         </Button>
-                        <Button size="sm" variant="ghost" onClick={() => {
-                          setForm({ id: c.id, name: c.name, phone: c.phone, plate_number: c.plate_number ?? '', is_active: c.is_active });
-                          setDialogOpen(true);
-                        }}>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => {
+                            setForm({
+                              id: c.id,
+                              name: c.name,
+                              phone: c.phone,
+                              plate_number: c.plate_number ?? '',
+                              is_active: c.is_active,
+                            });
+                            setDialogOpen(true);
+                          }}
+                        >
                           <Pencil className="h-4 w-4" />
                         </Button>
-                        <Button size="sm" variant="ghost" onClick={() => confirm('Silinsin mi?') && del.mutate(c.id)}>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => confirm('Silinsin mi?') && del.mutate(c.id)}
+                        >
                           <Trash2 className="h-4 w-4 text-red-500" />
                         </Button>
                       </div>
@@ -167,18 +199,52 @@ export default function CouriersPage() {
         </CardContent>
       </Card>
 
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} title={form.id ? 'Kurye Düzenle' : 'Yeni Kurye'}>
-        <form onSubmit={e => { e.preventDefault(); save.mutate(form); }} className="space-y-3">
-          <Input label="Ad Soyad" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required />
-          <Input label="Telefon" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="+90..." required />
-          <Input label="Plaka" value={form.plate_number} onChange={e => setForm({ ...form, plate_number: e.target.value })} placeholder="70 ABC 123" />
+      <Dialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        title={form.id ? 'Kurye Düzenle' : 'Yeni Kurye'}
+      >
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            save.mutate(form);
+          }}
+          className="space-y-3"
+        >
+          <Input
+            label="Ad Soyad"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            required
+          />
+          <Input
+            label="Telefon"
+            value={form.phone}
+            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            placeholder="+90..."
+            required
+          />
+          <Input
+            label="Plaka"
+            value={form.plate_number}
+            onChange={(e) => setForm({ ...form, plate_number: e.target.value })}
+            placeholder="70 ABC 123"
+          />
           <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={form.is_active} onChange={e => setForm({ ...form, is_active: e.target.checked })} />
+            <input
+              type="checkbox"
+              checked={form.is_active}
+              onChange={(e) => setForm({ ...form, is_active: e.target.checked })}
+            />
             Aktif
           </label>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>Vazgeç</Button>
-            <Button type="submit" isLoading={save.isPending}>Kaydet</Button>
+            <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
+              Vazgeç
+            </Button>
+            <Button type="submit" isLoading={save.isPending}>
+              Kaydet
+            </Button>
           </DialogFooter>
         </form>
       </Dialog>

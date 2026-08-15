@@ -112,7 +112,12 @@ export default function CampaignsPage() {
         title="Uygulama Kampanyaları"
         description="App içi kampanya ve promosyonları yönetin."
         actions={
-          <Button onClick={() => { setForm(empty); setDialogOpen(true); }}>
+          <Button
+            onClick={() => {
+              setForm(empty);
+              setDialogOpen(true);
+            }}
+          >
             <Plus className="h-4 w-4" /> Yeni Kampanya
           </Button>
         }
@@ -137,7 +142,7 @@ export default function CampaignsPage() {
                 </TR>
               </THead>
               <TBody>
-                {data.map(c => (
+                {data.map((c) => (
                   <TR key={c.id}>
                     <TD className="font-medium">{c.title}</TD>
                     <TD>{c.target_screen ?? '—'}</TD>
@@ -196,7 +201,7 @@ export default function CampaignsPage() {
         size="lg"
       >
         <form
-          onSubmit={e => {
+          onSubmit={(e) => {
             e.preventDefault();
             saveMutation.mutate(form);
           }}
@@ -205,38 +210,38 @@ export default function CampaignsPage() {
           <Input
             label="Başlık"
             value={form.title}
-            onChange={e => setForm({ ...form, title: e.target.value })}
+            onChange={(e) => setForm({ ...form, title: e.target.value })}
             required
           />
           <Textarea
             label="Açıklama"
             value={form.description}
-            onChange={e => setForm({ ...form, description: e.target.value })}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
             rows={3}
           />
           <Input
             label="Görsel URL"
             value={form.image_url}
-            onChange={e => setForm({ ...form, image_url: e.target.value })}
+            onChange={(e) => setForm({ ...form, image_url: e.target.value })}
           />
           <Input
             label="Hedef Ekran (örn. /yemek, /karaman)"
             value={form.target_screen}
-            onChange={e => setForm({ ...form, target_screen: e.target.value })}
+            onChange={(e) => setForm({ ...form, target_screen: e.target.value })}
           />
           <div className="grid grid-cols-2 gap-3">
             <Input
               label="Başlangıç"
               type="datetime-local"
               value={form.starts_at}
-              onChange={e => setForm({ ...form, starts_at: e.target.value })}
+              onChange={(e) => setForm({ ...form, starts_at: e.target.value })}
               required
             />
             <Input
               label="Bitiş"
               type="datetime-local"
               value={form.ends_at}
-              onChange={e => setForm({ ...form, ends_at: e.target.value })}
+              onChange={(e) => setForm({ ...form, ends_at: e.target.value })}
               required
             />
           </div>
@@ -245,14 +250,14 @@ export default function CampaignsPage() {
               label="Sıra"
               type="number"
               value={form.display_order}
-              onChange={e => setForm({ ...form, display_order: Number(e.target.value) })}
+              onChange={(e) => setForm({ ...form, display_order: Number(e.target.value) })}
               min={1}
             />
             <label className="flex items-center gap-2 self-end text-sm">
               <input
                 type="checkbox"
                 checked={form.is_active}
-                onChange={e => setForm({ ...form, is_active: e.target.checked })}
+                onChange={(e) => setForm({ ...form, is_active: e.target.checked })}
               />
               Aktif
             </label>

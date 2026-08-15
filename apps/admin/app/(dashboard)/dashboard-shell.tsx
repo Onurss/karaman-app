@@ -83,13 +83,13 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           <p className="text-xs text-slate-500">Admin Paneli</p>
         </div>
         <nav className="flex-1 space-y-4 overflow-y-auto px-3 py-2">
-          {navGroups.map(group => (
+          {navGroups.map((group) => (
             <div key={group.title}>
               <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-slate-400">
                 {group.title}
               </p>
               <div className="space-y-1">
-                {group.items.map(item => {
+                {group.items.map((item) => {
                   const Icon = item.icon;
                   const active = pathname === item.href || pathname.startsWith(item.href + '/');
                   return (

@@ -82,10 +82,7 @@ export default function UsersPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Kullanıcılar"
-        description="Karaman.com mobil kullanıcıları."
-      />
+      <PageHeader title="Kullanıcılar" description="Karaman.com mobil kullanıcıları." />
 
       <Card className="mb-4">
         <CardContent>
@@ -95,7 +92,7 @@ export default function UsersPage() {
               type="search"
               placeholder="İsim, e-posta veya telefon ara…"
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={(e) => setSearch(e.target.value)}
               className="flex-1 border-0 bg-transparent text-sm outline-none focus:ring-0"
             />
           </div>
@@ -121,7 +118,7 @@ export default function UsersPage() {
                 </TR>
               </THead>
               <TBody>
-                {data.map(u => (
+                {data.map((u) => (
                   <TR key={u.id}>
                     <TD className="font-medium">{u.full_name}</TD>
                     <TD className="text-gray-600">{u.email}</TD>
@@ -164,7 +161,11 @@ export default function UsersPage() {
               </div>
               <div>
                 <p className="text-gray-500">Telefon</p>
-                <p>{detailQuery.data.profile.phone ? formatPhone(detailQuery.data.profile.phone) : '—'}</p>
+                <p>
+                  {detailQuery.data.profile.phone
+                    ? formatPhone(detailQuery.data.profile.phone)
+                    : '—'}
+                </p>
               </div>
               <div>
                 <p className="text-gray-500">Kayıt Tarihi</p>
@@ -173,7 +174,9 @@ export default function UsersPage() {
             </div>
 
             <div>
-              <h3 className="mb-2 text-sm font-semibold">Son Siparişler ({detailQuery.data.orders.length})</h3>
+              <h3 className="mb-2 text-sm font-semibold">
+                Son Siparişler ({detailQuery.data.orders.length})
+              </h3>
               {detailQuery.data.orders.length === 0 ? (
                 <p className="text-sm text-gray-500">Bu kullanıcı henüz sipariş vermemiş.</p>
               ) : (
@@ -187,14 +190,16 @@ export default function UsersPage() {
                     </TR>
                   </THead>
                   <TBody>
-                    {detailQuery.data.orders.map(o => (
+                    {detailQuery.data.orders.map((o) => (
                       <TR key={o.id}>
                         <TD className="font-mono">{o.order_number}</TD>
                         <TD>{formatDate(o.created_at)}</TD>
                         <TD>
                           <Badge tone="info">{o.status}</Badge>
                         </TD>
-                        <TD className="text-right">{Number(o.total_amount).toLocaleString('tr-TR')} ₺</TD>
+                        <TD className="text-right">
+                          {Number(o.total_amount).toLocaleString('tr-TR')} ₺
+                        </TD>
                       </TR>
                     ))}
                   </TBody>

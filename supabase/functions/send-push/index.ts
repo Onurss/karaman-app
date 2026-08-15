@@ -15,7 +15,7 @@ interface ExpoPushMessage {
   badge?: number;
 }
 
-serve(async req => {
+serve(async (req) => {
   const cors = handleCors(req);
   if (cors) return cors;
 
@@ -60,7 +60,7 @@ serve(async req => {
     query = query.in('id', segment.user_ids);
   } else if (segment.food_customers) {
     const { data: orderUsers } = await service.from('orders').select('user_id');
-    const uniqueIds = Array.from(new Set((orderUsers ?? []).map(o => o.user_id)));
+    const uniqueIds = Array.from(new Set((orderUsers ?? []).map((o) => o.user_id)));
     if (uniqueIds.length) query = query.in('id', uniqueIds);
   }
 
@@ -70,8 +70,8 @@ serve(async req => {
   }
 
   const messages: ExpoPushMessage[] = (recipients ?? [])
-    .filter(p => p.push_token)
-    .map(p => ({
+    .filter((p) => p.push_token)
+    .map((p) => ({
       to: p.push_token!,
       title: notification.title,
       body: notification.body,
@@ -80,10 +80,7 @@ serve(async req => {
     }));
 
   // Gönderim başladı — geçmişte "Gönderiliyor" görünsün.
-  await service
-    .from('push_notifications')
-    .update({ status: 'sending' })
-    .eq('id', notification_id);
+  await service.from('push_notifications').update({ status: 'sending' }).eq('id', notification_id);
 
   let delivered = 0;
   let failed = 0;
@@ -102,9 +99,9 @@ serve(async req => {
       if (resp.ok) {
         // Expo her mesaj için bir ticket döner: { status: 'ok' | 'error' }.
         // Ticket bazında say — geçersiz/iptal edilmiş token'lar "error" gelir.
-        const json = (await resp.json().catch(() => null)) as
-          | { data?: Array<{ status?: string }> }
-          | null;
+        const json = (await resp.json().catch(() => null)) as {
+          data?: Array<{ status?: string }>;
+        } | null;
         const tickets = json?.data ?? [];
         if (tickets.length) {
           for (const t of tickets) {

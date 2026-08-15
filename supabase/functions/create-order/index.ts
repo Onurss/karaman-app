@@ -39,7 +39,7 @@ const createOrderSchema = z.object({
     .optional(),
 });
 
-serve(async req => {
+serve(async (req) => {
   const cors = handleCors(req);
   if (cors) return cors;
 
@@ -109,7 +109,7 @@ serve(async req => {
     return errorResponse(422, 'OUT_OF_DELIVERY_ZONE', 'Bu adres teslimat bölgemiz dışında.');
   }
 
-  const itemIds = payload.items.map(i => i.menu_item_id);
+  const itemIds = payload.items.map((i) => i.menu_item_id);
   const { data: menuItems, error: mErr } = await service
     .from('menu_items')
     .select('id, name, price, image_url, is_available, variants')
@@ -118,7 +118,7 @@ serve(async req => {
   if (mErr || !menuItems) {
     return errorResponse(500, 'MENU_FETCH', 'Menü alınamadı.');
   }
-  if (menuItems.some(m => !m.is_available)) {
+  if (menuItems.some((m) => !m.is_available)) {
     return errorResponse(422, 'ITEM_UNAVAILABLE', 'Sepetteki bir ürün stokta yok.');
   }
 
@@ -127,23 +127,20 @@ serve(async req => {
   type VariantOption = { id: string; price_delta?: number };
   type VariantGroup = { id: string; options?: VariantOption[] };
   type SelectedVariant = { group_id?: string; option_id?: string };
-  const extrasPerUnit = (
-    item: { variants?: unknown },
-    selected: SelectedVariant[],
-  ): number => {
+  const extrasPerUnit = (item: { variants?: unknown }, selected: SelectedVariant[]): number => {
     const groups = (item.variants ?? []) as VariantGroup[];
     let sum = 0;
     for (const sel of selected) {
-      const group = groups.find(g => g.id === sel.group_id);
-      const opt = group?.options?.find(o => o.id === sel.option_id);
+      const group = groups.find((g) => g.id === sel.group_id);
+      const opt = group?.options?.find((o) => o.id === sel.option_id);
       if (opt) sum += Number(opt.price_delta) || 0;
     }
     return sum;
   };
 
   let subtotal = 0;
-  const orderItemsToInsert = payload.items.map(line => {
-    const item = menuItems.find(m => m.id === line.menu_item_id);
+  const orderItemsToInsert = payload.items.map((line) => {
+    const item = menuItems.find((m) => m.id === line.menu_item_id);
     if (!item) throw new Error('Ürün eşleşmedi');
     const selectedVariants = (line.variants ?? []) as SelectedVariant[];
     const unitPrice = Number(item.price) + extrasPerUnit(item, selectedVariants);
@@ -162,7 +159,11 @@ serve(async req => {
   });
 
   if (subtotal < Number(restaurant.min_order_amount)) {
-    return errorResponse(422, 'MIN_ORDER', `Minimum sipariş tutarı ${restaurant.min_order_amount}₺`);
+    return errorResponse(
+      422,
+      'MIN_ORDER',
+      `Minimum sipariş tutarı ${restaurant.min_order_amount}₺`,
+    );
   }
 
   const deliveryFee = Number(restaurant.delivery_fee);
@@ -235,7 +236,7 @@ serve(async req => {
           address: address.full_address ?? 'Karaman',
           city: address.district ?? 'Karaman',
         },
-        basketItems: orderItemsToInsert.map(i => ({
+        basketItems: orderItemsToInsert.map((i) => ({
           id: i.menu_item_id,
           name: i.item_name_snapshot,
           price: Number(i.total_price),

@@ -3,14 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  PageHeader,
-} from '@/components/ui';
+import { Button, Card, CardContent, CardHeader, CardTitle, PageHeader } from '@/components/ui';
 import { useSupabase } from '@/lib/hooks/use-supabase';
 import { POS_PROVIDERS, paymentMethodLabel, type PosProvider } from '@karaman/shared-types';
 
@@ -80,13 +73,15 @@ export default function PaymentSettingsPage() {
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card>
-          <CardHeader><CardTitle>Ödeme Yöntemleri</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle>Ödeme Yöntemleri</CardTitle>
+          </CardHeader>
           <CardContent className="space-y-3">
             <label className="flex items-center gap-3">
               <input
                 type="checkbox"
                 checked={cashEnabled}
-                onChange={e => setCashEnabled(e.target.checked)}
+                onChange={(e) => setCashEnabled(e.target.checked)}
                 className="h-4 w-4"
               />
               <span className="text-sm font-medium">Kapıda Nakit</span>
@@ -95,7 +90,7 @@ export default function PaymentSettingsPage() {
               <input
                 type="checkbox"
                 checked={cardEnabled}
-                onChange={e => setCardEnabled(e.target.checked)}
+                onChange={(e) => setCardEnabled(e.target.checked)}
                 className="h-4 w-4"
               />
               <span className="text-sm font-medium">Kapıda Kart</span>
@@ -104,7 +99,7 @@ export default function PaymentSettingsPage() {
               <input
                 type="checkbox"
                 checked={onlineEnabled}
-                onChange={e => setOnlineEnabled(e.target.checked)}
+                onChange={(e) => setOnlineEnabled(e.target.checked)}
                 className="h-4 w-4"
               />
               <span className="text-sm font-medium">Online Kart (POS)</span>
@@ -113,11 +108,13 @@ export default function PaymentSettingsPage() {
         </Card>
 
         <Card>
-          <CardHeader><CardTitle>Aktif POS Sağlayıcı</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle>Aktif POS Sağlayıcı</CardTitle>
+          </CardHeader>
           <CardContent className="space-y-3">
             {onlineEnabled ? (
               <>
-                {POS_PROVIDERS.map(p => (
+                {POS_PROVIDERS.map((p) => (
                   <label key={p} className="flex items-center gap-3">
                     <input
                       type="radio"

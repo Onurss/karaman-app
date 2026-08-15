@@ -1,23 +1,9 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { ShoppingBag, TrendingUp, Clock, CheckCircle } from 'lucide-react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  PageHeader,
-} from '@/components/ui';
+import { Card, CardContent, CardHeader, CardTitle, PageHeader } from '@/components/ui';
 import { useSupabase } from '@/lib/hooks/use-supabase';
 import { useCurrentRestaurant } from '@/lib/hooks/use-restaurant';
 import { formatCurrency, localDateKey } from '@/lib/format';
@@ -49,7 +35,7 @@ export default function DashboardHome() {
 
       const orders = todayOrders.data ?? [];
       const total = orders.reduce((sum, o) => sum + Number(o.total_amount), 0);
-      const delivered = orders.filter(o => o.status === 'delivered').length;
+      const delivered = orders.filter((o) => o.status === 'delivered').length;
 
       return {
         todayCount: orders.length,
@@ -83,7 +69,7 @@ export default function DashboardHome() {
         const label = d.toLocaleDateString('tr-TR', { day: '2-digit', month: 'short' });
         buckets[key] = { date: label, orders: 0, revenue: 0 };
       }
-      (data ?? []).forEach(o => {
+      (data ?? []).forEach((o) => {
         const key = localDateKey(o.created_at);
         if (buckets[key]) {
           buckets[key].orders += 1;
@@ -132,7 +118,7 @@ export default function DashboardHome() {
       />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {kpis.map(k => {
+        {kpis.map((k) => {
           const Icon = k.icon;
           return (
             <Card key={k.label} className="flex items-center gap-4 p-4">
@@ -149,7 +135,9 @@ export default function DashboardHome() {
       </div>
 
       <Card>
-        <CardHeader><CardTitle>Son 7 Gün</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle>Son 7 Gün</CardTitle>
+        </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={last7DaysQuery.data ?? []}>

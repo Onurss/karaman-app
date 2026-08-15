@@ -1,4 +1,3 @@
-
 import type {
   AdBanner,
   AppCampaign,
@@ -38,13 +37,7 @@ import type {
   TransportType,
 } from './enums';
 
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[];
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 type LocationInput = string | GeoPoint;
 
@@ -151,11 +144,7 @@ export type OrderInsert = Optional<
     | 'cancelled_at'
     | 'delivery_location'
   > & { delivery_location: LocationInput },
-  | 'status'
-  | 'payment_status'
-  | 'commission_amount'
-  | 'vat_amount'
-  | 'delivery_fee'
+  'status' | 'payment_status' | 'commission_amount' | 'vat_amount' | 'delivery_fee'
 >;
 export type OrderUpdate = Partial<
   Omit<Order, 'delivery_address_snapshot'> & {
@@ -182,7 +171,10 @@ export type AppCampaignInsert = Optional<
 export type AppCampaignUpdate = Partial<AppCampaignInsert>;
 
 export type PushNotificationInsert = Optional<
-  Omit<PushNotification, 'id' | 'created_at' | 'total_recipients' | 'delivered_count' | 'opened_count'>,
+  Omit<
+    PushNotification,
+    'id' | 'created_at' | 'total_recipients' | 'delivered_count' | 'opened_count'
+  >,
   'target_segment'
 >;
 export type PushNotificationUpdate = Partial<PushNotificationInsert>;

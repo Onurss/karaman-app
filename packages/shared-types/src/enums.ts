@@ -1,4 +1,3 @@
-
 export const OrderStatus = {
   Pending: 'pending',
   Confirmed: 'confirmed',

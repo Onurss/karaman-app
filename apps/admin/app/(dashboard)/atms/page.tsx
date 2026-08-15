@@ -60,10 +60,7 @@ export default function AtmsAdminPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['admin-atms'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('atms_view')
-        .select('*')
-        .order('bank_name');
+      const { data, error } = await supabase.from('atms_view').select('*').order('bank_name');
       if (error) throw error;
       return data;
     },
@@ -115,7 +112,12 @@ export default function AtmsAdminPage() {
         title="ATM'ler"
         description="Karaman'daki banka ATM'lerini yönetin."
         actions={
-          <Button onClick={() => { setForm(empty); setDialogOpen(true); }}>
+          <Button
+            onClick={() => {
+              setForm(empty);
+              setDialogOpen(true);
+            }}
+          >
             <Plus className="h-4 w-4" /> Yeni ATM
           </Button>
         }
@@ -141,7 +143,7 @@ export default function AtmsAdminPage() {
                 </TR>
               </THead>
               <TBody>
-                {data.map(a => (
+                {data.map((a) => (
                   <TR key={a.id}>
                     <TD className="font-medium">{a.bank_name}</TD>
                     <TD>{a.branch_name ?? '—'}</TD>
@@ -198,12 +200,41 @@ export default function AtmsAdminPage() {
         </CardContent>
       </Card>
 
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} title={form.id ? 'ATM Düzenle' : 'Yeni ATM'}>
-        <form onSubmit={e => { e.preventDefault(); save.mutate(form); }} className="space-y-3">
-          <Input label="Banka" value={form.bank_name} onChange={e => setForm({ ...form, bank_name: e.target.value })} required />
-          <Input label="Şube" value={form.branch_name} onChange={e => setForm({ ...form, branch_name: e.target.value })} />
-          <Input label="Adres" value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} required />
-          <Input label="İlçe" value={form.district} onChange={e => setForm({ ...form, district: e.target.value })} required />
+      <Dialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        title={form.id ? 'ATM Düzenle' : 'Yeni ATM'}
+      >
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            save.mutate(form);
+          }}
+          className="space-y-3"
+        >
+          <Input
+            label="Banka"
+            value={form.bank_name}
+            onChange={(e) => setForm({ ...form, bank_name: e.target.value })}
+            required
+          />
+          <Input
+            label="Şube"
+            value={form.branch_name}
+            onChange={(e) => setForm({ ...form, branch_name: e.target.value })}
+          />
+          <Input
+            label="Adres"
+            value={form.address}
+            onChange={(e) => setForm({ ...form, address: e.target.value })}
+            required
+          />
+          <Input
+            label="İlçe"
+            value={form.district}
+            onChange={(e) => setForm({ ...form, district: e.target.value })}
+            required
+          />
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
@@ -212,15 +243,14 @@ export default function AtmsAdminPage() {
             <LocationPicker
               lat={Number(form.lat)}
               lng={Number(form.lng)}
-              onChange={loc =>
-                setForm(f => ({
+              onChange={(loc) =>
+                setForm((f) => ({
                   ...f,
                   lat: String(loc.lat),
                   lng: String(loc.lng),
                   address: loc.address ?? f.address,
                   district:
-                    loc.district &&
-                    (KARAMAN_DISTRICTS as readonly string[]).includes(loc.district)
+                    loc.district && (KARAMAN_DISTRICTS as readonly string[]).includes(loc.district)
                       ? loc.district
                       : f.district,
                 }))
@@ -229,22 +259,49 @@ export default function AtmsAdminPage() {
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <Input label="Enlem" value={form.lat} onChange={e => setForm({ ...form, lat: e.target.value })} required />
-            <Input label="Boylam" value={form.lng} onChange={e => setForm({ ...form, lng: e.target.value })} required />
+            <Input
+              label="Enlem"
+              value={form.lat}
+              onChange={(e) => setForm({ ...form, lat: e.target.value })}
+              required
+            />
+            <Input
+              label="Boylam"
+              value={form.lng}
+              onChange={(e) => setForm({ ...form, lng: e.target.value })}
+              required
+            />
           </div>
-          <Textarea label="Notlar" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} rows={2} />
+          <Textarea
+            label="Notlar"
+            value={form.notes}
+            onChange={(e) => setForm({ ...form, notes: e.target.value })}
+            rows={2}
+          />
           <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={form.is_24_7} onChange={e => setForm({ ...form, is_24_7: e.target.checked })} />
+            <input
+              type="checkbox"
+              checked={form.is_24_7}
+              onChange={(e) => setForm({ ...form, is_24_7: e.target.checked })}
+            />
             7/24 hizmet
           </label>
           <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={form.is_active} onChange={e => setForm({ ...form, is_active: e.target.checked })} />
+            <input
+              type="checkbox"
+              checked={form.is_active}
+              onChange={(e) => setForm({ ...form, is_active: e.target.checked })}
+            />
             Aktif
           </label>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>Vazgeç</Button>
-            <Button type="submit" isLoading={save.isPending}>Kaydet</Button>
+            <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
+              Vazgeç
+            </Button>
+            <Button type="submit" isLoading={save.isPending}>
+              Kaydet
+            </Button>
           </DialogFooter>
         </form>
       </Dialog>

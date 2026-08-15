@@ -10,9 +10,7 @@ export function getSupabaseBrowser() {
 
 export function getSupabaseServer(cookies: {
   getAll: () => { name: string; value: string }[];
-  setAll: (
-    items: { name: string; value: string; options?: Record<string, unknown> }[],
-  ) => void;
+  setAll: (items: { name: string; value: string; options?: Record<string, unknown> }[]) => void;
 }) {
   return createServerClient<Database>(url, anonKey, {
     cookies: { getAll: cookies.getAll, setAll: cookies.setAll },

@@ -51,7 +51,9 @@ export default function ReportsPage() {
     queryFn: async () => {
       const { data: orders } = await supabase
         .from('orders')
-        .select('id, created_at, status, payment_method, payment_status, total_amount, commission_amount, vat_amount, restaurant_id')
+        .select(
+          'id, created_at, status, payment_method, payment_status, total_amount, commission_amount, vat_amount, restaurant_id',
+        )
         .gte('created_at', from)
         .lte('created_at', to + 'T23:59:59');
 
@@ -72,12 +74,12 @@ export default function ReportsPage() {
     const total = orders.reduce((s, o) => s + Number(o.total_amount), 0);
     const commission = orders.reduce((s, o) => s + Number(o.commission_amount), 0);
     const vat = orders.reduce((s, o) => s + Number(o.vat_amount), 0);
-    const cancelled = orders.filter(o => o.status === 'cancelled').length;
-    const delivered = orders.filter(o => o.status === 'delivered').length;
+    const cancelled = orders.filter((o) => o.status === 'cancelled').length;
+    const delivered = orders.filter((o) => o.status === 'delivered').length;
     const cancelRate = orders.length > 0 ? (cancelled / orders.length) * 100 : 0;
 
     const dailyMap: Record<string, { date: string; revenue: number; orders: number }> = {};
-    orders.forEach(o => {
+    orders.forEach((o) => {
       const key = localDateKey(o.created_at);
       if (!dailyMap[key]) dailyMap[key] = { date: key.slice(5), revenue: 0, orders: 0 };
       dailyMap[key].revenue += Number(o.total_amount);
@@ -86,13 +88,13 @@ export default function ReportsPage() {
     const daily = Object.values(dailyMap).sort((a, b) => a.date.localeCompare(b.date));
 
     const paymentMap: Record<string, number> = {};
-    orders.forEach(o => {
+    orders.forEach((o) => {
       paymentMap[o.payment_method] = (paymentMap[o.payment_method] ?? 0) + 1;
     });
     const paymentDist = Object.entries(paymentMap).map(([name, value]) => ({ name, value }));
 
     const itemMap: Record<string, { name: string; quantity: number; revenue: number }> = {};
-    items.forEach(it => {
+    items.forEach((it) => {
       const k = it.item_name_snapshot;
       if (!itemMap[k]) itemMap[k] = { name: k, quantity: 0, revenue: 0 };
       itemMap[k].quantity += Number(it.quantity);
@@ -103,9 +105,16 @@ export default function ReportsPage() {
       .slice(0, 10);
 
     return {
-      total, commission, vat, count: orders.length,
-      delivered, cancelled, cancelRate,
-      daily, paymentDist, topItems,
+      total,
+      commission,
+      vat,
+      count: orders.length,
+      delivered,
+      cancelled,
+      cancelRate,
+      daily,
+      paymentDist,
+      topItems,
     };
   }, [data]);
 
@@ -113,7 +122,7 @@ export default function ReportsPage() {
     if (!data) return;
     exportToCSV(
       'rapor',
-      data.orders.map(o => ({
+      data.orders.map((o) => ({
         order_id: o.id,
         created_at: formatDateTime(o.created_at),
         status: o.status,
@@ -151,41 +160,68 @@ export default function ReportsPage() {
       <Card className="mb-4">
         <CardContent>
           <div className="grid grid-cols-2 gap-3">
-            <Input label="Başlangıç" type="date" value={from} onChange={e => setFrom(e.target.value)} />
-            <Input label="Bitiş" type="date" value={to} onChange={e => setTo(e.target.value)} />
+            <Input
+              label="Başlangıç"
+              type="date"
+              value={from}
+              onChange={(e) => setFrom(e.target.value)}
+            />
+            <Input label="Bitiş" type="date" value={to} onChange={(e) => setTo(e.target.value)} />
           </div>
         </CardContent>
       </Card>
 
       {isLoading ? (
-        <Card><CardContent>Yükleniyor…</CardContent></Card>
+        <Card>
+          <CardContent>Yükleniyor…</CardContent>
+        </Card>
       ) : (
         <>
           <div className="mb-4 grid grid-cols-2 gap-4 md:grid-cols-4">
             <Card>
-              <CardHeader><CardTitle className="text-sm text-gray-500">Toplam Sipariş</CardTitle></CardHeader>
-              <CardContent><p className="text-2xl font-semibold">{stats.count}</p></CardContent>
+              <CardHeader>
+                <CardTitle className="text-sm text-gray-500">Toplam Sipariş</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-semibold">{stats.count}</p>
+              </CardContent>
             </Card>
             <Card>
-              <CardHeader><CardTitle className="text-sm text-gray-500">Toplam Ciro</CardTitle></CardHeader>
-              <CardContent><p className="text-2xl font-semibold">{formatCurrency(stats.total)}</p></CardContent>
+              <CardHeader>
+                <CardTitle className="text-sm text-gray-500">Toplam Ciro</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-semibold">{formatCurrency(stats.total)}</p>
+              </CardContent>
             </Card>
             <Card>
-              <CardHeader><CardTitle className="text-sm text-gray-500">Komisyon Geliri</CardTitle></CardHeader>
-              <CardContent><p className="text-2xl font-semibold text-green-600">{formatCurrency(stats.commission)}</p></CardContent>
+              <CardHeader>
+                <CardTitle className="text-sm text-gray-500">Komisyon Geliri</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-semibold text-green-600">
+                  {formatCurrency(stats.commission)}
+                </p>
+              </CardContent>
             </Card>
             <Card>
-              <CardHeader><CardTitle className="text-sm text-gray-500">İptal Oranı</CardTitle></CardHeader>
+              <CardHeader>
+                <CardTitle className="text-sm text-gray-500">İptal Oranı</CardTitle>
+              </CardHeader>
               <CardContent>
                 <p className="text-2xl font-semibold">%{stats.cancelRate.toFixed(1)}</p>
-                <p className="text-xs text-gray-500">{stats.cancelled} iptal / {stats.delivered} teslim</p>
+                <p className="text-xs text-gray-500">
+                  {stats.cancelled} iptal / {stats.delivered} teslim
+                </p>
               </CardContent>
             </Card>
           </div>
 
           <div className="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Card>
-              <CardHeader><CardTitle>Günlük Ciro</CardTitle></CardHeader>
+              <CardHeader>
+                <CardTitle>Günlük Ciro</CardTitle>
+              </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={stats.daily}>
@@ -199,11 +235,21 @@ export default function ReportsPage() {
               </CardContent>
             </Card>
             <Card>
-              <CardHeader><CardTitle>Ödeme Yöntemi Dağılımı</CardTitle></CardHeader>
+              <CardHeader>
+                <CardTitle>Ödeme Yöntemi Dağılımı</CardTitle>
+              </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
-                    <Pie data={stats.paymentDist} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label>
+                    <Pie
+                      data={stats.paymentDist}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={100}
+                      label
+                    >
                       {stats.paymentDist.map((_, i) => (
                         <Cell key={i} fill={COLORS[i % COLORS.length]} />
                       ))}
@@ -217,7 +263,9 @@ export default function ReportsPage() {
           </div>
 
           <Card>
-            <CardHeader><CardTitle>En Çok Satan Ürünler (Top 10)</CardTitle></CardHeader>
+            <CardHeader>
+              <CardTitle>En Çok Satan Ürünler (Top 10)</CardTitle>
+            </CardHeader>
             <CardContent className="p-0">
               <Table>
                 <THead>

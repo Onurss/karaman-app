@@ -124,10 +124,10 @@ export default function ChargingStationsAdminPage() {
   });
 
   const toggleSocket = (s: string) => {
-    setForm(f => ({
+    setForm((f) => ({
       ...f,
       socket_types: f.socket_types.includes(s)
-        ? f.socket_types.filter(x => x !== s)
+        ? f.socket_types.filter((x) => x !== s)
         : [...f.socket_types, s],
     }));
   };
@@ -138,7 +138,12 @@ export default function ChargingStationsAdminPage() {
         title="Şarj İstasyonları"
         description="Elektrikli araç şarj istasyonlarını yönetin."
         actions={
-          <Button onClick={() => { setForm(empty); setDialogOpen(true); }}>
+          <Button
+            onClick={() => {
+              setForm(empty);
+              setDialogOpen(true);
+            }}
+          >
             <Plus className="h-4 w-4" /> Yeni İstasyon
           </Button>
         }
@@ -164,15 +169,17 @@ export default function ChargingStationsAdminPage() {
                 </TR>
               </THead>
               <TBody>
-                {data.map(c => (
+                {data.map((c) => (
                   <TR key={c.id}>
                     <TD className="font-medium">{c.name}</TD>
                     <TD>{c.operator ?? '—'}</TD>
                     <TD>{c.district}</TD>
                     <TD className="text-xs">
                       <div className="flex gap-1">
-                        {(c.socket_types as string[]).map(s => (
-                          <Badge key={s} tone="neutral">{SOCKET_LABEL[s] ?? s}</Badge>
+                        {(c.socket_types as string[]).map((s) => (
+                          <Badge key={s} tone="neutral">
+                            {SOCKET_LABEL[s] ?? s}
+                          </Badge>
                         ))}
                       </div>
                     </TD>
@@ -230,10 +237,31 @@ export default function ChargingStationsAdminPage() {
         title={form.id ? 'İstasyon Düzenle' : 'Yeni Şarj İstasyonu'}
         size="lg"
       >
-        <form onSubmit={e => { e.preventDefault(); save.mutate(form); }} className="space-y-3">
-          <Input label="Adı" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required />
-          <Input label="Operatör" value={form.operator} onChange={e => setForm({ ...form, operator: e.target.value })} placeholder="Örn. ZES, Eşarj, Trugo" />
-          <Input label="Adres" value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} required />
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            save.mutate(form);
+          }}
+          className="space-y-3"
+        >
+          <Input
+            label="Adı"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            required
+          />
+          <Input
+            label="Operatör"
+            value={form.operator}
+            onChange={(e) => setForm({ ...form, operator: e.target.value })}
+            placeholder="Örn. ZES, Eşarj, Trugo"
+          />
+          <Input
+            label="Adres"
+            value={form.address}
+            onChange={(e) => setForm({ ...form, address: e.target.value })}
+            required
+          />
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
@@ -242,15 +270,14 @@ export default function ChargingStationsAdminPage() {
             <LocationPicker
               lat={Number(form.lat)}
               lng={Number(form.lng)}
-              onChange={loc =>
-                setForm(f => ({
+              onChange={(loc) =>
+                setForm((f) => ({
                   ...f,
                   lat: String(loc.lat),
                   lng: String(loc.lng),
                   address: loc.address ?? f.address,
                   district:
-                    loc.district &&
-                    (KARAMAN_DISTRICTS as readonly string[]).includes(loc.district)
+                    loc.district && (KARAMAN_DISTRICTS as readonly string[]).includes(loc.district)
                       ? loc.district
                       : f.district,
                 }))
@@ -259,16 +286,37 @@ export default function ChargingStationsAdminPage() {
           </div>
 
           <div className="grid grid-cols-3 gap-3">
-            <Input label="İlçe" value={form.district} onChange={e => setForm({ ...form, district: e.target.value })} required />
-            <Input label="Enlem" value={form.lat} onChange={e => setForm({ ...form, lat: e.target.value })} required />
-            <Input label="Boylam" value={form.lng} onChange={e => setForm({ ...form, lng: e.target.value })} required />
+            <Input
+              label="İlçe"
+              value={form.district}
+              onChange={(e) => setForm({ ...form, district: e.target.value })}
+              required
+            />
+            <Input
+              label="Enlem"
+              value={form.lat}
+              onChange={(e) => setForm({ ...form, lat: e.target.value })}
+              required
+            />
+            <Input
+              label="Boylam"
+              value={form.lng}
+              onChange={(e) => setForm({ ...form, lng: e.target.value })}
+              required
+            />
           </div>
-          <Input label="Güç (kW)" type="number" value={form.power_kw} onChange={e => setForm({ ...form, power_kw: e.target.value })} required />
+          <Input
+            label="Güç (kW)"
+            type="number"
+            value={form.power_kw}
+            onChange={(e) => setForm({ ...form, power_kw: e.target.value })}
+            required
+          />
 
           <div>
             <p className="mb-1.5 text-sm font-medium">Soket Tipleri</p>
             <div className="flex flex-wrap gap-2">
-              {SOCKETS.map(s => (
+              {SOCKETS.map((s) => (
                 <button
                   key={s}
                   type="button"
@@ -285,15 +333,28 @@ export default function ChargingStationsAdminPage() {
             </div>
           </div>
 
-          <Textarea label="Notlar" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} rows={2} />
+          <Textarea
+            label="Notlar"
+            value={form.notes}
+            onChange={(e) => setForm({ ...form, notes: e.target.value })}
+            rows={2}
+          />
           <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={form.is_active} onChange={e => setForm({ ...form, is_active: e.target.checked })} />
+            <input
+              type="checkbox"
+              checked={form.is_active}
+              onChange={(e) => setForm({ ...form, is_active: e.target.checked })}
+            />
             Aktif
           </label>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>Vazgeç</Button>
-            <Button type="submit" isLoading={save.isPending}>Kaydet</Button>
+            <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
+              Vazgeç
+            </Button>
+            <Button type="submit" isLoading={save.isPending}>
+              Kaydet
+            </Button>
           </DialogFooter>
         </form>
       </Dialog>
